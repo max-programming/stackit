@@ -7,6 +7,7 @@ import {
 import { Clock, Star, ArrowUp, ArrowDown } from "lucide-react";
 import Link from "next/link";
 import { QuestionStats } from "./question-stats";
+import { Markdown } from "../ui/markdown";
 
 function getDifficultyColor(difficulty: string) {
   switch (difficulty) {
@@ -22,7 +23,7 @@ function getDifficultyColor(difficulty: string) {
 }
 
 interface Question {
-  id: number;
+  id: string;
   title: string;
   description: string;
   tags: string[];
@@ -41,7 +42,7 @@ interface QuestionCardProps {
 
 export function QuestionCard({ question }: QuestionCardProps) {
   return (
-    <div className="group bg-card/60 backdrop-blur-sm border border-border/50 rounded-xl p-6 hover:bg-card/80 hover:border-border hover:shadow-lg transition-all duration-300 cursor-pointer">
+    <div className="group bg-card/60 backdrop-blur-sm border border-border/50 rounded-xl p-4 sm:p-6 hover:bg-card/80 hover:border-border hover:shadow-lg transition-all duration-300 cursor-pointer">
       <div className="flex flex-col lg:flex-row gap-4">
         {/* Stats Column */}
         <QuestionStats
@@ -56,15 +57,18 @@ export function QuestionCard({ question }: QuestionCardProps) {
           <div className="flex flex-col gap-2 flex-1">
             {/* Question Title */}
             <Link href={`/questions/${question.id}`} className="block">
-              <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors duration-200 line-clamp-2">
+              <h3 className="text-base sm:text-lg font-semibold text-foreground group-hover:text-primary transition-colors duration-200 line-clamp-2">
                 {question.title}
               </h3>
             </Link>
 
             {/* Question Description */}
-            <p className="text-muted-foreground text-sm leading-relaxed line-clamp-4">
-              {question.description}
-            </p>
+            {/* <p
+              className="text-muted-foreground text-sm leading-relaxed line-clamp-3 sm:line-clamp-4"
+              dangerouslySetInnerHTML={{ __html: question.description }}
+            ></p> */}
+
+            <Markdown content={question.description} />
           </div>
 
           {/* Tags */}
@@ -90,8 +94,8 @@ export function QuestionCard({ question }: QuestionCardProps) {
           </div>
 
           {/* Meta Information */}
-          <div className="flex items-center justify-between pt-2 border-t border-border/50">
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-2 border-t border-border/50 gap-3 sm:gap-4">
+            <div className="flex items-center gap-3 sm:gap-4 text-sm text-muted-foreground">
               <Link
                 href={`/users/${question.user
                   .replace(/\s+/g, "-")
@@ -106,23 +110,23 @@ export function QuestionCard({ question }: QuestionCardProps) {
                       .join("")}
                   </span>
                 </div>
-                <span className="font-medium">{question.user}</span>
+                <span className="font-medium truncate">{question.user}</span>
               </Link>
 
               <div className="flex items-center gap-1">
                 <Clock className="w-3 h-3" />
-                <span>{question.timestamp}</span>
+                <span className="whitespace-nowrap">{question.timestamp}</span>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-8 px-3 text-muted-foreground hover:text-primary"
+                    className="h-8 px-2 sm:px-3 text-muted-foreground hover:text-primary hover:bg-accent/50"
                   >
                     <Star className="w-4 h-4" />
                   </Button>
@@ -137,7 +141,7 @@ export function QuestionCard({ question }: QuestionCardProps) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-8 px-3 text-muted-foreground hover:text-primary"
+                    className="h-8 px-2 sm:px-3 text-muted-foreground hover:text-primary hover:bg-accent/50"
                   >
                     <ArrowUp className="w-4 h-4" />
                   </Button>
@@ -152,7 +156,7 @@ export function QuestionCard({ question }: QuestionCardProps) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-8 px-3 text-muted-foreground hover:text-primary"
+                    className="h-8 px-2 sm:px-3 text-muted-foreground hover:text-primary hover:bg-accent/50"
                   >
                     <ArrowDown className="w-4 h-4" />
                   </Button>
