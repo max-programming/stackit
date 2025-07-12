@@ -68,7 +68,6 @@ export function AnswerForm({
       case "link":
         formattedText = `[${selectedText}](url)`;
         break;
-
       case "align-left":
       case "align-center":
       case "align-right":
@@ -149,14 +148,15 @@ export function AnswerForm({
             >
               <Link className="w-4 h-4" />
             </Button>
-
             <div className="w-px h-6 bg-border" />
             <Button
               type="button"
               variant="ghost"
               size="sm"
               onClick={() => handleFormat("align-left")}
-              className={`h-8 w-8 p-0 ${textAlignment === "left" ? "bg-muted" : ""}`}
+              className={`h-8 w-8 p-0 ${
+                textAlignment === "left" ? "bg-muted" : ""
+              }`}
             >
               <AlignLeft className="w-4 h-4" />
             </Button>
@@ -165,7 +165,9 @@ export function AnswerForm({
               variant="ghost"
               size="sm"
               onClick={() => handleFormat("align-center")}
-              className={`h-8 w-8 p-0 ${textAlignment === "center" ? "bg-muted" : ""}`}
+              className={`h-8 w-8 p-0 ${
+                textAlignment === "center" ? "bg-muted" : ""
+              }`}
             >
               <AlignCenter className="w-4 h-4" />
             </Button>
@@ -174,7 +176,9 @@ export function AnswerForm({
               variant="ghost"
               size="sm"
               onClick={() => handleFormat("align-right")}
-              className={`h-8 w-8 p-0 ${textAlignment === "right" ? "bg-muted" : ""}`}
+              className={`h-8 w-8 p-0 ${
+                textAlignment === "right" ? "bg-muted" : ""
+              }`}
             >
               <AlignRight className="w-4 h-4" />
             </Button>
@@ -184,7 +188,7 @@ export function AnswerForm({
           <textarea
             id="answer-content"
             value={content}
-            onChange={(e) => setContent(e.target.value)}
+            onChange={e => setContent(e.target.value)}
             placeholder={placeholder}
             className={`w-full min-h-[200px] p-4 bg-background border border-border rounded-lg resize-y focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm leading-relaxed text-${textAlignment}`}
             disabled={isSubmitting}

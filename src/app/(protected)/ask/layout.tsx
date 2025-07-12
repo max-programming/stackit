@@ -1,9 +1,14 @@
+import { auth } from "~/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import Header from "~/components/ui/header";
-import { auth } from "~/lib/auth";
+import type { Metadata } from "next";
 
-export default async function ProtectedLayout({
+export const metadata: Metadata = {
+  title: "Ask a Question",
+  description: "Ask a question to the community",
+};
+
+export default async function AskLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -16,10 +21,5 @@ export default async function ProtectedLayout({
     redirect("/login");
   }
 
-  return (
-    <div>
-      <Header session={session} />
-      {children}
-    </div>
-  );
+  return <div>{children}</div>;
 }
