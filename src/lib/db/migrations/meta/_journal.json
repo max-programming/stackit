@@ -15,6 +15,13 @@
       "when": 1752296374088,
       "tag": "0001_crazy_zombie",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1752299981072,
+      "tag": "0002_uneven_thunderbolt_ross",
+      "breakpoints": true
     }
   ]
 }

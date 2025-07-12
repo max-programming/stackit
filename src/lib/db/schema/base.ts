@@ -8,6 +8,7 @@ import {
   pgEnum,
   index,
   unique,
+  type AnyPgColumn,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { users } from "./auth";
@@ -31,7 +32,7 @@ export const tags = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
-  (table) => ({
+  table => ({
     nameIdx: index("tags_name_idx").on(table.name),
   })
 );
@@ -51,7 +52,7 @@ export const questions = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
-  (table) => ({
+  table => ({
     userIdIdx: index("questions_user_id_idx").on(table.userId),
     slugIdx: index("questions_slug_idx").on(table.slug),
     createdAtIdx: index("questions_created_at_idx").on(table.createdAt),
@@ -71,14 +72,14 @@ export const questionTags = pgTable(
       .references(() => tags.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
-  (table) => ({
+  table => ({
     questionTagUnique: unique().on(table.questionId, table.tagId),
     questionIdIdx: index("question_tags_question_id_idx").on(table.questionId),
     tagIdIdx: index("question_tags_tag_id_idx").on(table.tagId),
   })
 );
 
-export const answers: any = pgTable(
+export const answers = pgTable(
   "answers",
   {
     id: uuid("id").primaryKey().defaultRandom(),
@@ -88,7 +89,7 @@ export const answers: any = pgTable(
     questionId: uuid("question_id")
       .notNull()
       .references(() => questions.id, { onDelete: "cascade" }),
-    parentId: uuid("parent_id").references(() => answers.id, {
+    parentId: uuid("parent_id").references((): AnyPgColumn => answers.id, {
       onDelete: "cascade",
     }), // For nested comments
     content: text("content").notNull(), // Rich text content as HTML
@@ -99,7 +100,7 @@ export const answers: any = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
-  (table) => ({
+  table => ({
     userIdIdx: index("answers_user_id_idx").on(table.userId),
     questionIdIdx: index("answers_question_id_idx").on(table.questionId),
     parentIdIdx: index("answers_parent_id_idx").on(table.parentId),
@@ -117,20 +118,20 @@ export const votes = pgTable(
     userId: text("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    questionId: uuid("question_id").references(() => questions.id, {
-      onDelete: "cascade",
-    }),
+    // questionId: uuid("question_id").references(() => questions.id, {
+    //   onDelete: "cascade",
+    // }),
     answerId: uuid("answer_id").references(() => answers.id, {
       onDelete: "cascade",
     }),
     voteType: voteTypeEnum("vote_type").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
-  (table) => ({
-    userQuestionUnique: unique().on(table.userId, table.questionId),
+  table => ({
+    // userQuestionUnique: unique().on(table.userId, table.questionId),
     userAnswerUnique: unique().on(table.userId, table.answerId),
     userIdIdx: index("votes_user_id_idx").on(table.userId),
-    questionIdIdx: index("votes_question_id_idx").on(table.questionId),
+    // questionIdIdx: index("votes_question_id_idx").on(table.questionId),
     answerIdIdx: index("votes_answer_id_idx").on(table.answerId),
   })
 );
@@ -157,7 +158,7 @@ export const notifications = pgTable(
     isRead: boolean("is_read").default(false).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
-  (table) => ({
+  table => ({
     recipientIdIdx: index("notifications_recipient_id_idx").on(
       table.recipientId
     ),
@@ -211,10 +212,10 @@ export const answersRelations = relations(answers, ({ one, many }) => ({
 }));
 
 export const votesRelations = relations(votes, ({ one }) => ({
-  question: one(questions, {
-    fields: [votes.questionId],
-    references: [questions.id],
-  }),
+  // question: one(questions, {
+  //   fields: [votes.questionId],
+  //   references: [questions.id],
+  // }),
   answer: one(answers, {
     fields: [votes.answerId],
     references: [answers.id],
