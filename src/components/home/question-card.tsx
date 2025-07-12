@@ -9,38 +9,18 @@ import Link from "next/link";
 import { QuestionStats } from "./question-stats";
 import { Markdown } from "../ui/markdown";
 
-function getDifficultyColor(difficulty: string) {
-  switch (difficulty) {
-    case "beginner":
-      return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400";
-    case "intermediate":
-      return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400";
-    case "advanced":
-      return "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400";
-    default:
-      return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400";
-  }
-}
-
 interface Question {
   id: string;
   title: string;
   description: string;
-  slug: string;
-  tags: Array<{
-    id: string;
-    name: string;
-  }>;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-  };
-  answerCount: number;
-  voteCount: number;
-  viewCount: number;
-  createdAt: Date;
-  acceptedAnswerId: string | null;
+  tags: string[];
+  user: string;
+  answers: number;
+  votes: number;
+  views: number;
+  timestamp: string;
+  isAnswered: boolean;
+  difficulty: string;
 }
 
 interface QuestionCardProps {
@@ -53,10 +33,10 @@ export function QuestionCard({ question }: QuestionCardProps) {
       <div className="flex flex-col lg:flex-row gap-4">
         {/* Stats Column */}
         <QuestionStats
-          votes={question.voteCount}
-          answers={question.answerCount}
-          views={question.viewCount}
-          isAnswered={!!question.acceptedAnswerId}
+          votes={question.votes}
+          answers={question.answers}
+          views={question.views}
+          isAnswered={question.isAnswered}
         />
 
         {/* Content Column */}
@@ -80,13 +60,13 @@ export function QuestionCard({ question }: QuestionCardProps) {
 
           {/* Tags */}
           <div className="flex flex-wrap gap-2">
-            {question.tags.map((tag) => (
+            {question.tags.map(tag => (
               <Link
-                key={tag.id}
-                href={`/tags/${tag.name.toLowerCase()}`}
+                key={tag}
+                href={`/tags/${tag.toLowerCase()}`}
                 className="px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full hover:bg-primary/20 transition-colors duration-200"
               >
-                {tag.name}
+                {tag}
               </Link>
             ))}
           </div>
@@ -95,14 +75,14 @@ export function QuestionCard({ question }: QuestionCardProps) {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-2 border-t border-border/50 gap-3 sm:gap-4">
             <div className="flex items-center gap-3 sm:gap-4 text-sm text-muted-foreground">
               <Link
-                href={`/users/${question.user.id}`}
+                href={`/users/${question.user}`}
                 className="flex items-center gap-2 hover:text-primary transition-colors"
               >
                 <div className="w-6 h-6 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center">
                   <span className="text-xs font-semibold text-primary">
-                    {question.user.name
+                    {question.user
                       .split(" ")
-                      .map((n) => n[0])
+                      .map(n => n[0])
                       .join("")}
                   </span>
                 </div>
