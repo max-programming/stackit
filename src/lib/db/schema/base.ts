@@ -175,6 +175,10 @@ export const tagsRelations = relations(tags, ({ many }) => ({
 }));
 
 export const questionsRelations = relations(questions, ({ one, many }) => ({
+  user: one(users, {
+    fields: [questions.userId],
+    references: [users.id],
+  }),
   questionTags: many(questionTags),
   answers: many(answers),
   votes: many(votes),
@@ -183,6 +187,11 @@ export const questionsRelations = relations(questions, ({ one, many }) => ({
     fields: [questions.acceptedAnswerId],
     references: [answers.id],
   }),
+}));
+
+export const usersRelations = relations(users, ({ many }) => ({
+  questions: many(questions),
+  answers: many(answers),
 }));
 
 export const questionTagsRelations = relations(questionTags, ({ one }) => ({
@@ -197,6 +206,10 @@ export const questionTagsRelations = relations(questionTags, ({ one }) => ({
 }));
 
 export const answersRelations = relations(answers, ({ one, many }) => ({
+  user: one(users, {
+    fields: [answers.userId],
+    references: [users.id],
+  }),
   question: one(questions, {
     fields: [answers.questionId],
     references: [questions.id],
