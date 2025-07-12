@@ -4,6 +4,8 @@
 @custom-variant dark (&:is(.dark *));
 @plugin "@tailwindcss/typography";
 
+@plugin "tailwind-scrollbar-hide";
+
 :root {
   --base-50: oklch(0.9842 0.0032 228.71);
   --base-100: oklch(0.9682 0.0064 229.74);
@@ -63,6 +65,7 @@
   --sidebar-accent-foreground: var(--base-800);
   --sidebar-border: var(--base-200);
   --sidebar-ring: var(--primary-300);
+  --highlight: oklch(0.852 0.199 91.936);
 }
 
 .dark {
@@ -97,6 +100,7 @@
   --sidebar-accent-foreground: var(--base-200);
   --sidebar-border: var(--base-800);
   --sidebar-ring: var(--primary-300);
+  --highlight: oklch(0.852 0.199 91.936);
 }
 
 @theme inline {
@@ -161,6 +165,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --color-highlight: var(--highlight);
 }
 
 @layer base {
