@@ -1,6 +1,3 @@
-"use client";
-
-import { useState, useEffect } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import {
@@ -10,8 +7,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { Pagination } from "~/components/ui/pagination";
-import { Skeleton } from "~/components/ui/skeleton";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "~/components/ui/pagination";
 import Link from "next/link";
 
 const allQuestions = [
@@ -154,29 +158,6 @@ const allQuestions = [
 ];
 
 export default function HomePage() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const itemsPerPage = 10;
-
-  const totalPages = Math.ceil(allQuestions.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentQuestions = allQuestions.slice(startIndex, endIndex);
-
-  const handlePageChange = (page: number) => {
-    setIsLoading(true);
-    setCurrentPage(page);
-    // Simulate loading delay
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 300);
-  };
-
-  // Reset loading state when component mounts
-  useEffect(() => {
-    setIsLoading(false);
-  }, []);
-
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col items-center px-2 py-6">
       {/* Filters and Search */}
@@ -219,94 +200,86 @@ export default function HomePage() {
 
       {/* Questions List */}
       <div className="w-full max-w-3xl flex flex-col gap-4">
-        {isLoading
-          ? // Skeleton loading state
-            Array.from({ length: itemsPerPage }).map((_, index) => (
-              <div
-                key={`skeleton-${index}`}
-                className="rounded-lg border bg-card p-4 flex flex-col gap-2 sm:flex-row sm:items-center"
-              >
-                <div className="flex-1 space-y-3">
-                  <Skeleton className="h-5 w-3/4" />
-                  <div className="flex gap-2 items-start">
-                    <div className="flex gap-2">
-                      <Skeleton className="h-5 w-16" />
-                      <Skeleton className="h-5 w-20" />
-                    </div>
-                    <Skeleton className="h-12 w-full" />
+        {allQuestions.map(q => (
+          <div
+            key={q.id}
+            className="rounded-lg border bg-card p-4 flex flex-col gap-2 sm:flex-row sm:items-center"
+          >
+            <div className="flex-1 space-x-3">
+              <div className="font-semibold text-base truncate mb-2">
+                {q.title}
+              </div>
+              <div className="flex gap-2 items-start">
+                <div>
+                  <div className="flex gap-2 flex-wrap">
+                    {q.tags.slice(0, 2).map(tag => (
+                      <Link
+                        key={tag}
+                        href={"/"}
+                        className="px-2 py-0.5 rounded bg-muted text-xs text-muted-foreground hover:underline hover:text-primary"
+                        style={{ width: "fit-content" }}
+                      >
+                        {tag}
+                      </Link>
+                    ))}
                   </div>
-                  <Skeleton className="h-4 w-24" />
+                  {q.tags.length > 2 && (
+                    <div className="mt-1">
+                      <span
+                        className="px-2 py-0.5 rounded bg-muted text-xs text-muted-foreground cursor-default"
+                        style={{ width: "fit-content" }}
+                      >
+                        +{q.tags.length - 2}
+                      </span>
+                    </div>
+                  )}
                 </div>
-                <div className="flex flex-row sm:flex-col items-center gap-2 sm:ml-4">
-                  <Skeleton className="h-8 w-16" />
+                <div className="text-sm text-muted-foreground mb-1 flex-1 line-clamp-3">
+                  {q.description}
                 </div>
               </div>
-            ))
-          : currentQuestions.map(q => (
-              <div
-                key={q.id}
-                className="rounded-lg border bg-card p-4 flex flex-col gap-2 sm:flex-row sm:items-center"
+              <Link
+                href={"/"}
+                className="text-xs text-muted-foreground hover:underline hover:text-primary"
               >
-                <div className="flex-1 space-x-3">
-                  <div className="font-semibold text-base truncate mb-2">
-                    {q.title}
-                  </div>
-                  <div className="flex gap-2 items-start">
-                    <div>
-                      <div className="flex gap-2 flex-wrap">
-                        {q.tags.slice(0, 2).map(tag => (
-                          <Link
-                            key={tag}
-                            href={"/"}
-                            className="px-2 py-0.5 rounded bg-muted text-xs text-muted-foreground hover:underline hover:text-primary"
-                            style={{ width: "fit-content" }}
-                          >
-                            {tag}
-                          </Link>
-                        ))}
-                      </div>
-                      {q.tags.length > 2 && (
-                        <div className="mt-1">
-                          <span
-                            className="px-2 py-0.5 rounded bg-muted text-xs text-muted-foreground cursor-default"
-                            style={{ width: "fit-content" }}
-                          >
-                            +{q.tags.length - 2}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                    <div className="text-sm text-muted-foreground mb-1 flex-1 line-clamp-3">
-                      {q.description}
-                    </div>
-                  </div>
-                  <Link
-                    href={"/"}
-                    className="text-xs text-muted-foreground hover:underline hover:text-primary"
-                  >
-                    {q.user}
-                  </Link>
-                </div>
-                <div className="flex flex-row sm:flex-col items-center gap-2 sm:ml-4">
-                  <Button
-                    variant="secondary"
-                    className="px-3 py-1 text-xs cursor-default"
-                    disabled
-                  >
-                    {q.answers} ans
-                  </Button>
-                </div>
-              </div>
-            ))}
+                {q.user}
+              </Link>
+            </div>
+            <div className="flex flex-row sm:flex-col items-center gap-2 sm:ml-4">
+              <Button
+                variant="secondary"
+                className="px-3 py-1 text-xs cursor-default"
+                disabled
+              >
+                {q.answers} ans
+              </Button>
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* Pagination */}
       <div className="w-full max-w-3xl flex justify-center mt-8">
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-        />
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious href="#" />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#">1</PaginationLink>
+            </PaginationItem>
+
+            <PaginationItem>
+              <PaginationLink href="#">2</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext href="#" />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
     </div>
   );

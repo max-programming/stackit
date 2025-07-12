@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "./db";
 import * as authSchema from "./db/schema/auth";
-import { reactStartCookies } from "better-auth/react-start";
+import { nextCookies } from "better-auth/next-js";
 import { admin } from "better-auth/plugins";
 
 export const auth = betterAuth({
@@ -25,5 +25,5 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
   },
-  plugins: [admin(), reactStartCookies()],
+  plugins: [admin(), nextCookies()],
 });
