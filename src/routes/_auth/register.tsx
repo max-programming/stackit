@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -13,6 +13,8 @@ import {
 import { Separator } from "~/components/ui/separator";
 import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
 import { SiGoogle } from "@icons-pack/react-simple-icons";
+import { authClient } from "~/lib/auth-client";
+import { useRegister } from "~/mutations/auth/use-register";
 
 export const Route = createFileRoute("/_auth/register")({
   component: RouteComponent,
@@ -25,37 +27,19 @@ function RouteComponent() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleEmailSignup = async (e: React.FormEvent<HTMLFormElement>) => {
+  const { mutate: register, isPending } = useRegister();
+
+  async function handleEmailSignup(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setIsLoading(true);
+    register({ email, password, name });
+  }
 
-    // TODO: Implement email/password signup logic
-    console.log("Email signup:", {
-      name,
-      email,
-      password,
-      confirmPassword,
+  async function handleGoogleSignup() {
+    authClient.signIn.social({
+      provider: "google",
     });
-
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  };
-
-  const handleGoogleSignup = async () => {
-    setIsLoading(true);
-
-    // TODO: Implement Google OAuth signup
-    console.log("Google signup clicked");
-
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  };
+  }
 
   const passwordsMatch = password === confirmPassword;
   const isFormValid =
@@ -77,7 +61,7 @@ function RouteComponent() {
               variant="outline"
               className="w-full"
               onClick={handleGoogleSignup}
-              disabled={isLoading}
+              disabled={isPending}
             >
               <SiGoogle className="mr-2 h-4 w-4" />
               Continue with Google
@@ -212,21 +196,21 @@ function RouteComponent() {
               <Button
                 type="submit"
                 className="w-full"
-                disabled={isLoading || !isFormValid}
+                disabled={!isFormValid || isPending}
               >
-                {isLoading ? "Creating account..." : "Create Account"}
+                {isPending ? "Registering..." : "Register"}
               </Button>
             </form>
 
             <div className="text-center">
               <p className="text-sm text-muted-foreground">
                 Already have an account?{" "}
-                <a
-                  href="/login"
+                <Link
+                  to="/login"
                   className="text-primary hover:text-primary/80 underline"
                 >
                   Sign in
-                </a>
+                </Link>
               </p>
             </div>
           </CardContent>
