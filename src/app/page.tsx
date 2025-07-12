@@ -1,4 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+"use client";
+
 import { useState, useEffect } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -11,6 +12,7 @@ import {
 } from "~/components/ui/select";
 import { Pagination } from "~/components/ui/pagination";
 import { Skeleton } from "~/components/ui/skeleton";
+import Link from "next/link";
 
 const allQuestions = [
   {
@@ -151,11 +153,7 @@ const allQuestions = [
   },
 ];
 
-export const Route = createFileRoute("/")({
-  component: HomePage,
-});
-
-function HomePage() {
+export default function HomePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const itemsPerPage = 10;
@@ -189,7 +187,7 @@ function HomePage() {
             variant="default"
             className="flex-1 sm:flex-none h-full"
           >
-            <Link to={"/"}>Ask New question</Link>
+            <Link href={"/"}>Ask New question</Link>
           </Button>
           <div className="hidden sm:inline-block">
             <Select defaultValue="newest">
@@ -244,7 +242,7 @@ function HomePage() {
                 </div>
               </div>
             ))
-          : currentQuestions.map((q) => (
+          : currentQuestions.map(q => (
               <div
                 key={q.id}
                 className="rounded-lg border bg-card p-4 flex flex-col gap-2 sm:flex-row sm:items-center"
@@ -256,10 +254,10 @@ function HomePage() {
                   <div className="flex gap-2 items-start">
                     <div>
                       <div className="flex gap-2 flex-wrap">
-                        {q.tags.slice(0, 2).map((tag) => (
+                        {q.tags.slice(0, 2).map(tag => (
                           <Link
                             key={tag}
-                            to={"/"}
+                            href={"/"}
                             className="px-2 py-0.5 rounded bg-muted text-xs text-muted-foreground hover:underline hover:text-primary"
                             style={{ width: "fit-content" }}
                           >
@@ -283,7 +281,7 @@ function HomePage() {
                     </div>
                   </div>
                   <Link
-                    to={"/"}
+                    href={"/"}
                     className="text-xs text-muted-foreground hover:underline hover:text-primary"
                   >
                     {q.user}

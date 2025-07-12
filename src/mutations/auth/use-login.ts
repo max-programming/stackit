@@ -1,9 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
+import { useRouter } from "next/navigation";
 import { authClient } from "~/lib/auth-client";
 
 export function useLogin() {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   return useMutation({
     async mutationFn({ email, password }: LoginMutation) {
@@ -13,7 +13,7 @@ export function useLogin() {
       });
     },
     onSuccess() {
-      navigate({ to: "/" });
+      router.push("/");
     },
   });
 }
