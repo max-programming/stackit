@@ -10,6 +10,7 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import { useLogout } from "~/mutations/auth/use-logout";
+import Link from "next/link";
 
 function Header({ session }: { session: any | null }) {
   const { mutate: logout } = useLogout();
@@ -62,9 +63,11 @@ function Header({ session }: { session: any | null }) {
             </PopoverContent>
           </Popover>
         ) : (
-          <Button variant="outline" className="gap-2">
-            <LogIn className="h-4 w-4" />
-            Login
+          <Button asChild variant="outline" className="gap-2">
+            <Link href="/login">
+              <LogIn className="h-4 w-4" />
+              Login
+            </Link>
           </Button>
         )}
       </div>
