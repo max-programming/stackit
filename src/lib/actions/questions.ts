@@ -10,6 +10,7 @@ import {
   users,
   votes,
 } from "~/lib/db/schema";
+import { getQuestionUserVote } from "./questionVotes";
 
 export interface QuestionWithDetails {
   id: string;
@@ -31,6 +32,7 @@ export interface QuestionWithDetails {
   answerCount: number;
   voteCount: number;
   viewCount: number;
+  userVote?: "up" | "down" | null;
 }
 
 export interface AnswerWithDetails {
@@ -58,7 +60,8 @@ export interface PaginatedAnswers {
 }
 
 export async function getQuestionBySlug(
-  slug: string
+  slug: string,
+  userId?: string
 ): Promise<QuestionWithDetails | null> {
   try {
     const question = await db
@@ -103,11 +106,14 @@ export async function getQuestionBySlug(
         and(eq(answers.questionId, question[0].id), isNull(answers.parentId))
       );
 
-    // Get vote count (for now, we'll use a placeholder - you might want to add a votes table for questions)
-    const voteCount = 0; // Placeholder
+    // Get vote count (temporary placeholder until migration)
+    const voteCount = 0;
 
-    // Get view count (you might want to add a views table)
-    const viewCount = 0; // Placeholder
+    // Get view count (temporary placeholder until migration)
+    const viewCount = 0;
+
+    // Get user's vote if authenticated
+    const userVote = await getQuestionUserVote(question[0].id, userId);
 
     return {
       ...question[0],
@@ -115,6 +121,7 @@ export async function getQuestionBySlug(
       answerCount: answerCountResult[0]?.count || 0,
       voteCount,
       viewCount,
+      userVote,
     };
   } catch (error) {
     console.error("Error fetching question:", error);

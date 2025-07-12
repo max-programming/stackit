@@ -9,10 +9,12 @@ import {
   Link,
   List,
   ListOrdered,
+  Image,
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Markdown } from "~/components/ui/markdown";
 
 interface AnswerFormProps {
   onSubmit: (content: string) => void;
@@ -21,6 +23,8 @@ interface AnswerFormProps {
   title?: string;
 }
 
+type TextAlignment = "left" | "center" | "right";
+
 export function AnswerForm({
   onSubmit,
   isSubmitting = false,
@@ -28,6 +32,7 @@ export function AnswerForm({
   title = "Your Answer",
 }: AnswerFormProps) {
   const [content, setContent] = useState("");
+  const [textAlignment, setTextAlignment] = useState<TextAlignment>("left");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,8 +70,14 @@ export function AnswerForm({
         formattedText = `[${selectedText}](url)`;
         break;
       case "image":
-        formattedText = `![${selectedText}](image-url)`;
+        formattedText = `![${selectedText || "Image description"}](image-url)`;
         break;
+      case "align-left":
+      case "align-center":
+      case "align-right":
+        const alignment = format.replace("align-", "") as TextAlignment;
+        setTextAlignment(alignment);
+        return;
       default:
         return;
     }
@@ -85,23 +96,6 @@ export function AnswerForm({
     }, 0);
   };
 
-  // Convert markdown to HTML for preview
-  const convertMarkdownToHtml = (text: string): string => {
-    return text
-      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-      .replace(/\*(.*?)\*/g, "<em>$1</em>")
-      .replace(
-        /\[([^\]]+)\]\(([^)]+)\)/g,
-        '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">$1</a>'
-      )
-      .replace(
-        /!\[([^\]]+)\]\(([^)]+)\)/g,
-        '<img src="$2" alt="$1" class="max-w-full h-auto rounded" />'
-      )
-      .replace(/^•\s+(.*)$/gm, "<li>$1</li>")
-      .replace(/^\d+\.\s+(.*)$/gm, "<li>$1</li>")
-      .replace(/\n/g, "<br>");
-  };
 
   return (
     <Card className="bg-card/60 backdrop-blur-sm border border-border/50">
@@ -168,14 +162,15 @@ export function AnswerForm({
               aria-label="Add image"
               role="button"
             >
-              {/* <Image className="w-4 h-4"  /> */}
+              <Image className="w-4 h-4" />
             </Button>
             <div className="w-px h-6 bg-border" />
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              className="h-8 w-8 p-0"
+              onClick={() => handleFormat("align-left")}
+              className={`h-8 w-8 p-0 ${textAlignment === "left" ? "bg-muted" : ""}`}
             >
               <AlignLeft className="w-4 h-4" />
             </Button>
@@ -183,7 +178,8 @@ export function AnswerForm({
               type="button"
               variant="ghost"
               size="sm"
-              className="h-8 w-8 p-0"
+              onClick={() => handleFormat("align-center")}
+              className={`h-8 w-8 p-0 ${textAlignment === "center" ? "bg-muted" : ""}`}
             >
               <AlignCenter className="w-4 h-4" />
             </Button>
@@ -191,7 +187,8 @@ export function AnswerForm({
               type="button"
               variant="ghost"
               size="sm"
-              className="h-8 w-8 p-0"
+              onClick={() => handleFormat("align-right")}
+              className={`h-8 w-8 p-0 ${textAlignment === "right" ? "bg-muted" : ""}`}
             >
               <AlignRight className="w-4 h-4" />
             </Button>
@@ -203,7 +200,7 @@ export function AnswerForm({
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder={placeholder}
-            className="w-full min-h-[200px] p-4 bg-background border border-border rounded-lg resize-y focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm leading-relaxed"
+            className={`w-full min-h-[200px] p-4 bg-background border border-border rounded-lg resize-y focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm leading-relaxed text-${textAlignment}`}
             disabled={isSubmitting}
           />
 
@@ -213,12 +210,9 @@ export function AnswerForm({
               <h4 className="text-sm font-medium text-foreground mb-2">
                 Preview:
               </h4>
-              <div
-                className="prose prose-sm max-w-none text-muted-foreground"
-                dangerouslySetInnerHTML={{
-                  __html: convertMarkdownToHtml(content),
-                }}
-              />
+              <div className={`text-muted-foreground text-${textAlignment}`}>
+                <Markdown content={content} className="prose-sm" />
+              </div>
             </div>
           )}
 

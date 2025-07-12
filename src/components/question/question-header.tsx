@@ -8,6 +8,7 @@ import { Clock, Star, ArrowUp, ArrowDown, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { formatTimestamp } from "~/lib/utils/slug";
 import type { QuestionWithDetails } from "~/lib/actions/questions";
+import { Markdown } from "~/components/ui/markdown";
 
 interface QuestionHeaderProps {
   question: QuestionWithDetails;
@@ -96,8 +97,8 @@ export function QuestionHeader({
           </div>
 
           {/* Question Description */}
-          <div className="prose prose-sm max-w-none text-muted-foreground leading-relaxed">
-            <div dangerouslySetInnerHTML={{ __html: question.description }} />
+          <div className="text-muted-foreground leading-relaxed">
+            <Markdown content={question.description} className="prose-sm" />
           </div>
 
           {/* Tags */}

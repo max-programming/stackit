@@ -6,7 +6,7 @@ import { headers } from "next/headers";
 
 interface PageProps {
   params: Promise<{
-    questionId: string;
+    questionSlug: string;
   }>;
   searchParams: Promise<{
     page?: string;
@@ -17,11 +17,15 @@ export default async function QuestionPage({
   params,
   searchParams,
 }: PageProps) {
-  const { questionId } = await params;
+  const { questionSlug } = await params;
   const { page: searchPage } = await searchParams;
-  console.log("questionId", questionId);
 
-  const question = await getQuestionBySlug(questionId);
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  const userId = session?.user?.id;
+
+  const question = await getQuestionBySlug(questionSlug, userId);
 
   if (!question) {
     notFound();
@@ -30,10 +34,6 @@ export default async function QuestionPage({
   const page = parseInt(searchPage || "1");
   const initialAnswers = await getQuestionAnswers(question.id, page);
 
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  const userId = session?.user?.id;
   const isOwner = session?.user?.id === question.user.id;
 
   return (

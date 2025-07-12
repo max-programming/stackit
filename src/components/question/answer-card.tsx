@@ -19,11 +19,12 @@ import { formatTimestamp } from "~/lib/utils/slug";
 import type { AnswerWithDetails } from "~/lib/actions/questions";
 import { useAnswerChildren, useCreateAnswer } from "~/lib/queries/answers";
 import { AnswerForm } from "./answer-form";
+import { Markdown } from "~/components/ui/markdown";
 
 interface AnswerCardProps {
   answer: AnswerWithDetails;
   isQuestionOwner?: boolean;
-  isAccepted?: boolean;
+  acceptedAnswerId?: string | null;
   onVote?: (answerId: string, voteType: "up" | "down") => void;
   onAccept?: (answerId: string) => void;
   questionId: string;
@@ -32,7 +33,7 @@ interface AnswerCardProps {
 export function AnswerCard({
   answer,
   isQuestionOwner = false,
-  isAccepted = false,
+  acceptedAnswerId,
   onVote,
   onAccept,
   questionId,
@@ -69,7 +70,7 @@ export function AnswerCard({
     setShowCommentForm(false);
   };
 
-  const isAcceptedAnswer = isAccepted && answer.id === answer.id; // This should be compared with question.acceptedAnswerId
+  const isAcceptedAnswer = acceptedAnswerId === answer.id;
 
   return (
     <div
@@ -159,8 +160,8 @@ export function AnswerCard({
           </div>
 
           {/* Answer Content */}
-          <div className="prose prose-sm max-w-none text-muted-foreground leading-relaxed">
-            <div dangerouslySetInnerHTML={{ __html: answer.content }} />
+          <div className="text-muted-foreground leading-relaxed">
+            <Markdown content={answer.content} className="prose-sm" />
           </div>
 
           {/* Meta Information */}
@@ -245,8 +246,11 @@ export function AnswerCard({
           {showComments && (
             <div className="mt-4 space-y-4">
               {loadingChildren ? (
-                <div className="text-sm text-muted-foreground">
-                  Loading comments...
+                <div className="flex items-center justify-center py-4">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <div className="w-4 h-4 border-2 border-muted-foreground border-t-transparent rounded-full animate-spin"></div>
+                    Loading comments...
+                  </div>
                 </div>
               ) : children && children.length > 0 ? (
                 <div className="space-y-3 pl-4 border-l-2 border-border/50">
@@ -275,10 +279,9 @@ export function AnswerCard({
                           </span>
                         </div>
                       </div>
-                      <div
-                        className="text-sm text-muted-foreground"
-                        dangerouslySetInnerHTML={{ __html: child.content }}
-                      />
+                      <div className="text-sm text-muted-foreground">
+                        <Markdown content={child.content} className="prose-xs" />
+                      </div>
                     </div>
                   ))}
                 </div>

@@ -49,6 +49,8 @@ export const questions = pgTable(
     description: text("description").notNull(), // Rich text content as HTML
     slug: text("slug").notNull().unique(), // URL-friendly version of title
     acceptedAnswerId: uuid("accepted_answer_id"), // Self-referencing to answers table
+    voteCount: integer("vote_count").default(0).notNull(),
+    viewCount: integer("view_count").default(0).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
@@ -56,6 +58,7 @@ export const questions = pgTable(
     userIdIdx: index("questions_user_id_idx").on(table.userId),
     slugIdx: index("questions_slug_idx").on(table.slug),
     createdAtIdx: index("questions_created_at_idx").on(table.createdAt),
+    voteCountIdx: index("questions_vote_count_idx").on(table.voteCount),
   })
 );
 
@@ -118,9 +121,9 @@ export const votes = pgTable(
     userId: text("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    // questionId: uuid("question_id").references(() => questions.id, {
-    //   onDelete: "cascade",
-    // }),
+    questionId: uuid("question_id").references(() => questions.id, {
+      onDelete: "cascade",
+    }),
     answerId: uuid("answer_id").references(() => answers.id, {
       onDelete: "cascade",
     }),
@@ -128,10 +131,10 @@ export const votes = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   table => ({
-    // userQuestionUnique: unique().on(table.userId, table.questionId),
+    userQuestionUnique: unique().on(table.userId, table.questionId),
     userAnswerUnique: unique().on(table.userId, table.answerId),
     userIdIdx: index("votes_user_id_idx").on(table.userId),
-    // questionIdIdx: index("votes_question_id_idx").on(table.questionId),
+    questionIdIdx: index("votes_question_id_idx").on(table.questionId),
     answerIdIdx: index("votes_answer_id_idx").on(table.answerId),
   })
 );
@@ -225,10 +228,10 @@ export const answersRelations = relations(answers, ({ one, many }) => ({
 }));
 
 export const votesRelations = relations(votes, ({ one }) => ({
-  // question: one(questions, {
-  //   fields: [votes.questionId],
-  //   references: [questions.id],
-  // }),
+  question: one(questions, {
+    fields: [votes.questionId],
+    references: [questions.id],
+  }),
   answer: one(answers, {
     fields: [votes.answerId],
     references: [answers.id],
