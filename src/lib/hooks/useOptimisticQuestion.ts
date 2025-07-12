@@ -15,15 +15,29 @@ export function useOptimisticQuestion(initialQuestion: QuestionWithDetails) {
         let newUserVote: "up" | "down" | null = voteType;
 
         if (currentVote === voteType) {
-          // Remove vote if same type
-          newVoteCount -= voteType === "up" ? 1 : -1;
+          // Remove vote if same type (toggle off)
+          if (voteType === "up") {
+            newVoteCount -= 1;
+          } else {
+            newVoteCount += 1; // Remove downvote = add 1
+          }
           newUserVote = null;
         } else if (currentVote) {
           // Change vote type (from up to down or down to up)
-          newVoteCount += voteType === "up" ? 2 : -2;
+          if (currentVote === "up" && voteType === "down") {
+            // Remove upvote (-1) and add downvote (-1) = -2 total
+            newVoteCount -= 2;
+          } else if (currentVote === "down" && voteType === "up") {
+            // Remove downvote (+1) and add upvote (+1) = +2 total
+            newVoteCount += 2;
+          }
         } else {
-          // Add new vote
-          newVoteCount += voteType === "up" ? 1 : -1;
+          // Add new vote (no previous vote)
+          if (voteType === "up") {
+            newVoteCount += 1;
+          } else {
+            newVoteCount -= 1;
+          }
         }
 
         return {
