@@ -1,5 +1,6 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import Header from "~/components/ui/header";
 import { auth } from "~/lib/auth";
 
 export default async function ProtectedLayout({
@@ -15,5 +16,10 @@ export default async function ProtectedLayout({
     redirect("/login");
   }
 
-  return <div>{children}</div>;
+  return (
+    <div>
+      <Header session={session} />
+      {children}
+    </div>
+  );
 }
