@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -13,6 +13,8 @@ import {
 import { Separator } from "~/components/ui/separator";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { SiGoogle } from "@icons-pack/react-simple-icons";
+import { authClient } from "~/lib/auth-client";
+import { useLogin } from "~/mutations/auth/use-login";
 
 export const Route = createFileRoute("/_auth/login")({
   component: RouteComponent,
@@ -22,32 +24,19 @@ function RouteComponent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleEmailLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const { mutate: login, isPending } = useLogin();
+
+  async function handleEmailLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setIsLoading(true);
+    login({ email, password });
+  }
 
-    // TODO: Implement email/password login logic
-    console.log("Email login:", { email, password });
-
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  };
-
-  const handleGoogleLogin = async () => {
-    setIsLoading(true);
-
-    // TODO: Implement Google OAuth login
-    console.log("Google login clicked");
-
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  };
+  async function handleGoogleLogin() {
+    authClient.signIn.social({
+      provider: "google",
+    });
+  }
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
@@ -67,7 +56,7 @@ function RouteComponent() {
               variant="outline"
               className="w-full"
               onClick={handleGoogleLogin}
-              disabled={isLoading}
+              disabled={isPending}
             >
               <SiGoogle className="mr-2 h-4 w-4" />
               Continue with Google
@@ -137,20 +126,20 @@ function RouteComponent() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Signing in..." : "Sign In"}
+              <Button type="submit" className="w-full" disabled={isPending}>
+                {isPending ? "Logging in..." : "Log In"}
               </Button>
             </form>
 
             <div className="text-center">
               <p className="text-sm text-muted-foreground">
                 Don't have an account?{" "}
-                <a
-                  href="/register"
+                <Link
+                  to="/register"
                   className="text-primary hover:text-primary/80 underline"
                 >
-                  Sign up
-                </a>
+                  Register
+                </Link>
               </p>
             </div>
           </CardContent>
