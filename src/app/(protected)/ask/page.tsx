@@ -1,42 +1,6 @@
-"use client";
-
-import React, { useState } from "react";
-import { SerializedEditorState } from "lexical";
-import { Editor } from "~/components/blocks/editor-x/editor";
-
-const initialValue = {
-  root: {
-    children: [
-      {
-        children: [
-          {
-            detail: 0,
-            format: 0,
-            mode: "normal",
-            style: "",
-            text: "Hello World 🚀",
-            type: "text",
-            version: 1,
-          },
-        ],
-        direction: "ltr",
-        format: "",
-        indent: 0,
-        type: "paragraph",
-        version: 1,
-      },
-    ],
-    direction: "ltr",
-    format: "",
-    indent: 0,
-    type: "root",
-    version: 1,
-  },
-} as unknown as SerializedEditorState;
+// import { AskEditor } from "~/components/editor/ask-editor";
 
 function Page() {
-  const [editorState, setEditorState] =
-    useState<SerializedEditorState>(initialValue);
   return (
     <div className="min-h-screen bg-background text-foreground">
       <main className="w-full max-w-3xl mx-auto px-4 py-12">
@@ -61,12 +25,7 @@ function Page() {
             >
               Description
             </label>
-            <div className="w-full h-48 overflow-y-auto bg-input text-foreground border border-border rounded-md">
-              <Editor
-                editorSerializedState={editorState}
-                onSerializedChange={(value) => setEditorState(value)}
-              />
-            </div>
+            {/* <AskEditor localStorageKey="ask-editor" /> */}
           </div>
 
           <div>

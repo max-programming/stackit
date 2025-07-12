@@ -1,6 +1,25 @@
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
-import * as schema from "./schema";
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres, { Sql } from 'postgres';
+import * as schema from './schema';
 
-const client = postgres(process.env.DATABASE_URL!);
-export const db = drizzle({ client, schema, casing: "snake_case" });
+let connection: Sql<{}>;
+
+if (process.env.NODE_ENV === 'production') {
+  connection = postgres(process.env.DATABASE_URL!);
+} else {
+  let globalConnection = global as typeof globalThis & {
+    connection: Sql<{}>;
+  };
+
+  if (!globalConnection.connection) globalConnection.connection = postgres(process.env.DATABASE_URL!);
+
+  connection = globalConnection.connection;
+}
+
+const db = drizzle(connection, {
+  schema,
+  casing: "snake_case",
+  logger: process.env.NODE_ENV !== "production",
+});
+
+export {db};
