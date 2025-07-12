@@ -2,7 +2,7 @@ import type { Question } from "./question-card";
 
 export const allQuestions: Question[] = [
   {
-    id: 1,
+    id: "1",
     title:
       "How to join 2 columns in a data set to make a separate column in SQL",
     description:
@@ -17,7 +17,7 @@ export const allQuestions: Question[] = [
     difficulty: "beginner",
   },
   {
-    id: 2,
+    id: "2",
     title: "How to use React Context for global state?",
     description:
       "Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
@@ -31,7 +31,7 @@ export const allQuestions: Question[] = [
     difficulty: "intermediate",
   },
   {
-    id: 3,
+    id: "3",
     title: "How to optimize a slow API call?",
     description:
       "Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
@@ -45,7 +45,7 @@ export const allQuestions: Question[] = [
     difficulty: "advanced",
   },
   {
-    id: 4,
+    id: "4",
     title: "Best practices for TypeScript interfaces",
     description:
       "I'm learning TypeScript and want to understand the best practices for creating interfaces. What are some common patterns and anti-patterns?",
@@ -59,7 +59,7 @@ export const allQuestions: Question[] = [
     difficulty: "intermediate",
   },
   {
-    id: 5,
+    id: "5",
     title: "How to implement authentication with JWT tokens?",
     description:
       "I need to implement user authentication in my Node.js application using JWT tokens. Can someone provide a step-by-step guide?",
@@ -73,7 +73,7 @@ export const allQuestions: Question[] = [
     difficulty: "advanced",
   },
   {
-    id: 6,
+    id: "6",
     title: "CSS Grid vs Flexbox: When to use which?",
     description:
       "I'm confused about when to use CSS Grid and when to use Flexbox. Can someone explain the differences and use cases?",
@@ -87,7 +87,7 @@ export const allQuestions: Question[] = [
     difficulty: "intermediate",
   },
   {
-    id: 7,
+    id: "7",
     title: "How to deploy a React app to Vercel?",
     description:
       "I've built a React application and want to deploy it to Vercel. What are the steps involved and any common issues to watch out for?",
@@ -101,7 +101,7 @@ export const allQuestions: Question[] = [
     difficulty: "beginner",
   },
   {
-    id: 8,
+    id: "8",
     title: "Database normalization explained",
     description:
       "I'm studying database design and need help understanding normalization. Can someone explain the different normal forms with examples?",
@@ -115,7 +115,7 @@ export const allQuestions: Question[] = [
     difficulty: "advanced",
   },
   {
-    id: 9,
+    id: "9",
     title: "How to handle errors in async/await functions?",
     description:
       "I'm using async/await in my JavaScript code but I'm not sure about the best way to handle errors. What are the recommended patterns?",
@@ -129,7 +129,7 @@ export const allQuestions: Question[] = [
     difficulty: "intermediate",
   },
   {
-    id: 10,
+    id: "10",
     title: "Setting up a CI/CD pipeline with GitHub Actions",
     description:
       "I want to set up continuous integration and deployment for my project using GitHub Actions. Can someone provide a basic workflow example?",
@@ -143,7 +143,7 @@ export const allQuestions: Question[] = [
     difficulty: "advanced",
   },
   {
-    id: 11,
+    id: "11",
     title: "How to implement dark mode in a web app?",
     description:
       "I want to add dark mode functionality to my web application. What are the best approaches for implementing this feature?",
@@ -157,7 +157,7 @@ export const allQuestions: Question[] = [
     difficulty: "intermediate",
   },
   {
-    id: 12,
+    id: "12",
     title: "Understanding React hooks: useEffect vs useState",
     description:
       "I'm learning React hooks and I'm confused about when to use useEffect vs useState. Can someone explain the differences?",
@@ -171,7 +171,7 @@ export const allQuestions: Question[] = [
     difficulty: "beginner",
   },
   {
-    id: 13,
+    id: "13",
     title: "How to optimize images for web performance?",
     description:
       "I want to improve my website's loading speed by optimizing images. What are the best practices and tools for image optimization?",
@@ -185,7 +185,7 @@ export const allQuestions: Question[] = [
     difficulty: "intermediate",
   },
   {
-    id: 14,
+    id: "14",
     title: "Building a RESTful API with Express.js",
     description:
       "I'm building a REST API with Express.js and want to follow best practices. Can someone provide a comprehensive guide?",
@@ -199,7 +199,7 @@ export const allQuestions: Question[] = [
     difficulty: "advanced",
   },
   {
-    id: 15,
+    id: "15",
     title: "How to implement infinite scrolling?",
     description:
       "I want to implement infinite scrolling in my React application. What are the best approaches and libraries to use?",

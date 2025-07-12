@@ -22,7 +22,7 @@ import Link from "next/link";
 
 export function QuestionFilters() {
   return (
-    <div className="bg-card/50 backdrop-blur-sm border rounded-xl p-6 mb-8 shadow-lg">
+    <div className="bg-card/50 backdrop-blur-sm border rounded-xl p-4 sm:p-6 mb-6 sm:mb-8 shadow-lg">
       <div className="flex flex-col lg:flex-row gap-4">
         {/* Left side - Action buttons */}
         <div className="flex flex-col sm:flex-row gap-3">
@@ -30,23 +30,23 @@ export function QuestionFilters() {
             asChild
             className="group relative overflow-hidden bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
           >
-            <Link href="/" className="flex items-center gap-2">
+            <Link href="/" className="flex items-center justify-center gap-2">
               <Plus className="w-4 h-4" />
               Ask Question
             </Link>
           </Button>
 
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <Button
               variant="outline"
-              className="flex items-center gap-2 hover:bg-accent"
+              className="flex items-center justify-center gap-2 hover:bg-accent"
             >
               <TrendingUp className="w-4 h-4" />
               Trending
             </Button>
             <Button
               variant="outline"
-              className="flex items-center gap-2 hover:bg-accent"
+              className="flex items-center justify-center gap-2 hover:bg-accent"
             >
               <Users className="w-4 h-4" />
               Unanswered
@@ -55,7 +55,7 @@ export function QuestionFilters() {
         </div>
 
         {/* Right side - Search and filters */}
-        <div className="flex flex-1 gap-3">
+        <div className="flex flex-1 flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
@@ -64,45 +64,47 @@ export function QuestionFilters() {
             />
           </div>
 
-          <Select defaultValue="newest">
-            <SelectTrigger className="w-40 bg-background/50 backdrop-blur-sm border-muted/50">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="newest">
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4" />
-                  Newest
-                </div>
-              </SelectItem>
-              <SelectItem value="votes">
-                <div className="flex items-center gap-2">
-                  <ArrowUp className="w-4 h-4" />
-                  Most Votes
-                </div>
-              </SelectItem>
-              <SelectItem value="answers">
-                <div className="flex items-center gap-2">
-                  <MessageCircle className="w-4 h-4" />
-                  Most Answers
-                </div>
-              </SelectItem>
-              <SelectItem value="views">
-                <div className="flex items-center gap-2">
-                  <Eye className="w-4 h-4" />
-                  Most Views
-                </div>
-              </SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex gap-2">
+            <Select defaultValue="newest">
+              <SelectTrigger className="w-full sm:w-40 bg-background/50 backdrop-blur-sm border-muted/50">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4" />
+                    Newest
+                  </div>
+                </SelectItem>
+                <SelectItem value="votes">
+                  <div className="flex items-center gap-2">
+                    <ArrowUp className="w-4 h-4" />
+                    Most Votes
+                  </div>
+                </SelectItem>
+                <SelectItem value="answers">
+                  <div className="flex items-center gap-2">
+                    <MessageCircle className="w-4 h-4" />
+                    Most Answers
+                  </div>
+                </SelectItem>
+                <SelectItem value="views">
+                  <div className="flex items-center gap-2">
+                    <Eye className="w-4 h-4" />
+                    Most Views
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
 
-          <Button
-            variant="outline"
-            className="flex items-center gap-2 hover:bg-accent"
-          >
-            <Filter className="w-4 h-4" />
-            <span className="hidden sm:inline">Filter</span>
-          </Button>
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 hover:bg-accent sm:px-4"
+            >
+              <Filter className="w-4 h-4" />
+              <span className="hidden sm:inline">Filter</span>
+            </Button>
+          </div>
         </div>
       </div>
     </div>
