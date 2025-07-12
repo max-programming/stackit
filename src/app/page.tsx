@@ -8,12 +8,28 @@ import {
 } from "~/components/home";
 import { db } from "~/lib/db";
 import { questions, answers, users, questionTags, tags } from "~/lib/db/schema";
-import { desc, count, sql, eq, and, lt, or, type SQL } from "drizzle-orm";
+import {
+  desc,
+  count,
+  sql,
+  eq,
+  and,
+  lt,
+  or,
+  type SQL,
+  asc,
+  like,
+  isNull,
+  gte,
+} from "drizzle-orm";
 import { formatTimeAgo } from "~/lib/utils";
 
 interface SearchParams {
   page?: string;
   limit?: string;
+  search?: string;
+  sort?: string;
+  filter?: string;
 }
 
 interface PaginationData {
@@ -42,7 +58,7 @@ export default async function HomePage({
         <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8">
           {/* Header Section */}
           <QuestionHeader
-            title="Top Questions"
+            title="Questions"
             description="Discover the most engaging discussions in our community"
           />
 
@@ -74,9 +90,12 @@ async function getQuestions(searchParams: SearchParams): Promise<{
 }> {
   const limit = parseInt(searchParams.limit || "10");
   const page = parseInt(searchParams.page || "1");
+  const search = searchParams.search || "";
+  const sort = searchParams.sort || "newest";
+  const filter = searchParams.filter || "all";
 
   // Get cursor for the current page
-  const cacheKey = `page_${page}_limit_${limit}`;
+  const cacheKey = `page_${page}_limit_${limit}_search_${search}_sort_${sort}_filter_${filter}`;
   let cursor = cursorCache.get(cacheKey);
 
   // Parse cursor if exists
@@ -97,8 +116,32 @@ async function getQuestions(searchParams: SearchParams): Promise<{
   // Build where conditions
   const whereConditions: SQL[] = [];
 
+  // Add search conditions
+  if (search) {
+    whereConditions.push(
+      or(
+        like(questions.title, `%${search}%`),
+        like(questions.description, `%${search}%`),
+        like(users.name, `%${search}%`),
+        like(tags.name, `%${search}%`)
+      )!
+    );
+  }
+
+  // Add filter conditions
+  if (filter === "unanswered") {
+    whereConditions.push(isNull(questions.acceptedAnswerId));
+  } else if (filter === "trending") {
+    // Questions created in the last 7 days with votes
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    whereConditions.push(gte(questions.createdAt, sevenDaysAgo));
+  }
+
+  // Add cursor conditions for pagination
   if (cursorDate && cursorId && page > 1) {
-    // Always go in next direction for page navigation
+    // For simplicity, we'll use creation date and ID for all sorting types
+    // This ensures consistent pagination even if the sort values are the same
     whereConditions.push(
       or(
         lt(questions.createdAt, cursorDate),
@@ -107,8 +150,27 @@ async function getQuestions(searchParams: SearchParams): Promise<{
     );
   }
 
-  // Always use descending order for page navigation
-  const orderByConditions = [desc(questions.createdAt), desc(questions.id)];
+  // Determine sort order
+  let orderByConditions: SQL[];
+
+  switch (sort) {
+    case "votes":
+      orderByConditions = [
+        desc(sql<number>`COALESCE(SUM(${answers.voteCount}), 0)`),
+        desc(questions.id),
+      ];
+      break;
+    case "answers":
+      orderByConditions = [
+        desc(count(sql`DISTINCT ${answers.id}`)),
+        desc(questions.id),
+      ];
+      break;
+    case "newest":
+    default:
+      orderByConditions = [desc(questions.createdAt), desc(questions.id)];
+      break;
+  }
 
   // Build the query
   const baseQuery = db
@@ -170,10 +232,11 @@ async function getQuestions(searchParams: SearchParams): Promise<{
   // Cache cursor for next page
   if (hasMore && questionsToShow.length > 0) {
     const lastItem = questionsToShow[questionsToShow.length - 1];
-    const nextCursor = Buffer.from(
-      `${lastItem.createdAt.toISOString()}|${lastItem.id}`
-    ).toString("base64");
-    const nextPageKey = `page_${page + 1}_limit_${limit}`;
+    const cursorData = `${lastItem.createdAt.toISOString()}|${lastItem.id}`;
+    const nextCursor = Buffer.from(cursorData).toString("base64");
+    const nextPageKey = `page_${
+      page + 1
+    }_limit_${limit}_search_${search}_sort_${sort}_filter_${filter}`;
     cursorCache.set(nextPageKey, nextCursor);
   }
 
@@ -182,6 +245,7 @@ async function getQuestions(searchParams: SearchParams): Promise<{
     id: q.id,
     title: q.title,
     description: q.description,
+    slug: q.slug,
     tags: q.tagNames ? q.tagNames.split(",").filter(Boolean) : [],
     user: q.userName || "Unknown User",
     answers: q.answerCount,
