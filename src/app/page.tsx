@@ -34,6 +34,7 @@ export default async function HomePage({
 }) {
   const params = await searchParams;
   const { questionsData, pagination } = await getQuestions(params);
+  console.log(questionsData);
 
   return (
     <TooltipProvider>
@@ -50,7 +51,7 @@ export default async function HomePage({
 
           {/* Questions List */}
           <div className="space-y-3 sm:space-y-4">
-            {questionsData.map((question) => (
+            {questionsData.map(question => (
               <QuestionCard key={question.id} question={question} />
             ))}
           </div>
@@ -177,7 +178,7 @@ async function getQuestions(searchParams: SearchParams): Promise<{
   }
 
   // Transform to match the expected Question type
-  const questionsData = questionsToShow.map((q) => ({
+  const questionsData = questionsToShow.map(q => ({
     id: q.id,
     title: q.title,
     description: q.description,
