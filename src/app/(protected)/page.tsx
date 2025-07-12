@@ -23,7 +23,7 @@ export default function HomePage() {
 
           {/* Questions List */}
           <div className="space-y-4">
-            {allQuestions.map(question => (
+            {allQuestions.map((question) => (
               <QuestionCard key={question.id} question={question} />
             ))}
           </div>

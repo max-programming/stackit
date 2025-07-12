@@ -1,16 +1,16 @@
 "use client";
 
 import { SiGoogle } from "@icons-pack/react-simple-icons";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import { authClient } from "~/lib/auth-client";
+import { useLogin } from "~/mutations/auth/use-login";
 import { Button } from "./ui/button";
 import { CardContent } from "./ui/card";
-import { Separator } from "./ui/separator";
-import { Mail, Lock, EyeOff, Eye } from "lucide-react";
-import { Label } from "./ui/label";
 import { Input } from "./ui/input";
-import { useState } from "react";
-import { useLogin } from "~/mutations/auth/use-login";
-import { authClient } from "~/lib/auth-client";
-import Link from "next/link";
+import { Label } from "./ui/label";
+import { Separator } from "./ui/separator";
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
@@ -112,7 +112,7 @@ export function LoginForm() {
 
       <div className="text-center">
         <p className="text-sm text-muted-foreground">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link
             href="/register"
             className="text-primary hover:text-primary/80 underline"

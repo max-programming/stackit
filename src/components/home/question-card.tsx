@@ -7,32 +7,27 @@ import {
 import { Clock, Star, ArrowUp, ArrowDown } from "lucide-react";
 import Link from "next/link";
 import { QuestionStats } from "./question-stats";
-
-function getDifficultyColor(difficulty: string) {
-  switch (difficulty) {
-    case "beginner":
-      return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400";
-    case "intermediate":
-      return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400";
-    case "advanced":
-      return "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400";
-    default:
-      return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400";
-  }
-}
+import { formatTimestamp } from "~/lib/utils/slug";
 
 interface Question {
-  id: number;
+  id: string;
   title: string;
   description: string;
-  tags: string[];
-  user: string;
-  answers: number;
-  votes: number;
-  views: number;
-  timestamp: string;
-  isAnswered: boolean;
-  difficulty: string;
+  slug: string;
+  tags: Array<{
+    id: string;
+    name: string;
+  }>;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  answerCount: number;
+  voteCount: number;
+  viewCount: number;
+  createdAt: Date;
+  acceptedAnswerId: string | null;
 }
 
 interface QuestionCardProps {
@@ -45,73 +40,63 @@ export function QuestionCard({ question }: QuestionCardProps) {
       <div className="flex flex-col lg:flex-row gap-4">
         {/* Stats Column */}
         <QuestionStats
-          votes={question.votes}
-          answers={question.answers}
-          views={question.views}
-          isAnswered={question.isAnswered}
+          votes={question.voteCount}
+          answers={question.answerCount}
+          views={question.viewCount}
+          isAnswered={!!question.acceptedAnswerId}
         />
 
         {/* Content Column */}
         <div className="flex-1 space-y-3 flex flex-col">
           <div className="flex flex-col gap-2 flex-1">
             {/* Question Title */}
-            <Link href={`/questions/${question.id}`} className="block">
+            <Link href={`/questions/${question.slug}`} className="block">
               <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors duration-200 line-clamp-2">
                 {question.title}
               </h3>
             </Link>
 
             {/* Question Description */}
-            <p className="text-muted-foreground text-sm leading-relaxed line-clamp-4">
-              {question.description}
-            </p>
+            <div
+              className="text-muted-foreground text-sm leading-relaxed line-clamp-4"
+              dangerouslySetInnerHTML={{ __html: question.description }}
+            />
           </div>
 
           {/* Tags */}
           <div className="flex flex-wrap gap-2">
-            {question.tags.map(tag => (
+            {question.tags.map((tag) => (
               <Link
-                key={tag}
-                href={`/tags/${tag.toLowerCase()}`}
+                key={tag.id}
+                href={`/tags/${tag.name.toLowerCase()}`}
                 className="px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full hover:bg-primary/20 transition-colors duration-200"
               >
-                {tag}
+                {tag.name}
               </Link>
             ))}
-
-            {/* Difficulty Badge */}
-            <span
-              className={`px-3 py-1 text-xs font-medium rounded-full ${getDifficultyColor(
-                question.difficulty
-              )}`}
-            >
-              {question.difficulty}
-            </span>
           </div>
 
           {/* Meta Information */}
           <div className="flex items-center justify-between pt-2 border-t border-border/50">
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <Link
-                href={`/users/${question.user
-                  .replace(/\s+/g, "-")
-                  .toLowerCase()}`}
+                href={`/users/${question.user.id}`}
                 className="flex items-center gap-2 hover:text-primary transition-colors"
               >
                 <div className="w-6 h-6 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center">
                   <span className="text-xs font-semibold text-primary">
-                    {question.user
+                    {question.user.name
                       .split(" ")
-                      .map(n => n[0])
+                      .map((n) => n[0])
                       .join("")}
                   </span>
                 </div>
-                <span className="font-medium">{question.user}</span>
+                <span className="font-medium">{question.user.name}</span>
               </Link>
 
               <div className="flex items-center gap-1">
                 <Clock className="w-3 h-3" />
-                <span>{question.timestamp}</span>
+                <span>{formatTimestamp(question.createdAt)}</span>
               </div>
             </div>
 
