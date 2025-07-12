@@ -15,6 +15,7 @@ interface QuestionHeaderProps {
   isOwner?: boolean;
   onVote?: (voteType: "up" | "down") => void;
   userVote?: "up" | "down" | null;
+  isVoting?: boolean;
 }
 
 export function QuestionHeader({
@@ -22,9 +23,10 @@ export function QuestionHeader({
   isOwner = false,
   onVote,
   userVote,
+  isVoting = false,
 }: QuestionHeaderProps) {
   const handleVote = (voteType: "up" | "down") => {
-    if (onVote) {
+    if (onVote && !isVoting) {
       onVote(voteType);
     }
   };
@@ -44,8 +46,9 @@ export function QuestionHeader({
                     userVote === "up"
                       ? "text-primary"
                       : "text-muted-foreground hover:text-primary"
-                  }`}
+                  } ${isVoting ? "opacity-50 cursor-not-allowed" : ""}`}
                   onClick={() => handleVote("up")}
+                  disabled={isVoting}
                 >
                   <ArrowUp className="w-5 h-5" />
                 </Button>
@@ -66,8 +69,9 @@ export function QuestionHeader({
                     userVote === "down"
                       ? "text-primary"
                       : "text-muted-foreground hover:text-primary"
-                  }`}
+                  } ${isVoting ? "opacity-50 cursor-not-allowed" : ""}`}
                   onClick={() => handleVote("down")}
+                  disabled={isVoting}
                 >
                   <ArrowDown className="w-5 h-5" />
                 </Button>
@@ -136,29 +140,10 @@ export function QuestionHeader({
                 <Clock className="w-3 h-3" />
                 <span>{formatTimestamp(question.createdAt)}</span>
               </div>
-
-              <div className="flex items-center gap-1">
-                <span>{question.viewCount} views</span>
-              </div>
             </div>
 
             {/* Action Buttons */}
             <div className="flex items-center gap-2">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 px-3 text-muted-foreground hover:text-primary"
-                  >
-                    <Star className="w-4 h-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Add to favorites</p>
-                </TooltipContent>
-              </Tooltip>
-
               {isOwner && (
                 <Button variant="outline" size="sm">
                   Edit Question

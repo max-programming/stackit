@@ -19,14 +19,6 @@ export function QuestionNavigation({ questionTitle }: QuestionNavigationProps) {
 
         <ChevronLeft className="w-4 h-4" />
 
-        <Link href="/questions">
-          <Button variant="ghost" size="sm" className="h-8 px-2">
-            Questions
-          </Button>
-        </Link>
-
-        <ChevronLeft className="w-4 h-4" />
-
         <span className="text-foreground font-medium line-clamp-1">
           {questionTitle}
         </span>

@@ -28,6 +28,7 @@ interface AnswerCardProps {
   onVote?: (answerId: string, voteType: "up" | "down") => void;
   onAccept?: (answerId: string) => void;
   questionId: string;
+  isVoting?: boolean;
 }
 
 export function AnswerCard({
@@ -37,6 +38,7 @@ export function AnswerCard({
   onVote,
   onAccept,
   questionId,
+  isVoting = false,
 }: AnswerCardProps) {
   const [showComments, setShowComments] = useState(false);
   const [showCommentForm, setShowCommentForm] = useState(false);
@@ -49,7 +51,7 @@ export function AnswerCard({
   const createAnswerMutation = useCreateAnswer();
 
   const handleVote = (voteType: "up" | "down") => {
-    if (onVote) {
+    if (onVote && !isVoting) {
       onVote(answer.id, voteType);
     }
   };
@@ -91,8 +93,9 @@ export function AnswerCard({
                     answer.userVote === "up"
                       ? "text-primary"
                       : "text-muted-foreground hover:text-primary"
-                  }`}
+                  } ${isVoting ? "opacity-50 cursor-not-allowed" : ""}`}
                   onClick={() => handleVote("up")}
+                  disabled={isVoting}
                 >
                   <ArrowUp className="w-5 h-5" />
                 </Button>
@@ -113,8 +116,9 @@ export function AnswerCard({
                     answer.userVote === "down"
                       ? "text-primary"
                       : "text-muted-foreground hover:text-primary"
-                  }`}
+                  } ${isVoting ? "opacity-50 cursor-not-allowed" : ""}`}
                   onClick={() => handleVote("down")}
+                  disabled={isVoting}
                 >
                   <ArrowDown className="w-5 h-5" />
                 </Button>

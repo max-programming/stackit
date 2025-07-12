@@ -82,47 +82,103 @@ export function useAcceptAnswer() {
   });
 }
 
-// Optimistic update helper for votes
-export function useOptimisticVote() {
+// Hook for optimistic answer voting
+export function useOptimisticAnswerVote(questionId: string) {
   const queryClient = useQueryClient();
 
-  const updateVoteOptimistically = (
+  const updateAnswerOptimistically = (
     answerId: string,
     voteType: "up" | "down",
-    questionId: string
+    currentAnswer: AnswerWithDetails
   ) => {
-    // Optimistically update the question data
-    queryClient.setQueryData(["questions", questionId], (oldData: unknown) => {
-      if (!oldData || typeof oldData !== "object" || oldData === null)
-        return oldData;
+    const currentVote = currentAnswer.userVote;
+    let newVoteCount = currentAnswer.voteCount;
+    let newUserVote: "up" | "down" | null = voteType;
 
-      const data = oldData as { answers: AnswerWithDetails[] };
-      return {
-        ...data,
-        answers: data.answers.map((answer: AnswerWithDetails) => {
-          if (answer.id === answerId) {
-            const currentVote = answer.userVote;
-            let newVoteCount = answer.voteCount;
+    if (currentVote === voteType) {
+      // Remove vote if same type
+      newVoteCount -= voteType === "up" ? 1 : -1;
+      newUserVote = null;
+    } else if (currentVote) {
+      // Change vote type (from up to down or down to up)
+      newVoteCount += voteType === "up" ? 2 : -2;
+    } else {
+      // Add new vote
+      newVoteCount += voteType === "up" ? 1 : -1;
+    }
 
-            if (currentVote === voteType) {
-              // Remove vote
-              newVoteCount -= voteType === "up" ? 1 : -1;
-              return { ...answer, voteCount: newVoteCount, userVote: null };
-            } else if (currentVote) {
-              // Change vote
-              newVoteCount += voteType === "up" ? 2 : -2;
-              return { ...answer, voteCount: newVoteCount, userVote: voteType };
-            } else {
-              // Add new vote
-              newVoteCount += voteType === "up" ? 1 : -1;
-              return { ...answer, voteCount: newVoteCount, userVote: voteType };
-            }
-          }
-          return answer;
-        }),
-      };
-    });
+    return {
+      ...currentAnswer,
+      voteCount: newVoteCount,
+      userVote: newUserVote,
+    };
   };
 
-  return { updateVoteOptimistically };
+  const mutation = useMutation({
+    mutationFn: ({
+      answerId,
+      voteType,
+    }: {
+      answerId: string;
+      voteType: "up" | "down";
+    }) => voteAnswer(answerId, voteType),
+    onMutate: async ({ answerId, voteType }) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({
+        queryKey: ["questions", questionId, "answers"],
+      });
+
+      // Snapshot the previous value
+      const previousData = queryClient.getQueryData([
+        "questions",
+        questionId,
+        "answers",
+      ]);
+
+      // Optimistically update the answer in the infinite query
+      queryClient.setQueryData(
+        ["questions", questionId, "answers"],
+        (oldData: any) => {
+          if (!oldData) return oldData;
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              answers: page.answers.map((answer: AnswerWithDetails) => {
+                if (answer.id === answerId) {
+                  return updateAnswerOptimistically(answerId, voteType, answer);
+                }
+                return answer;
+              }),
+            })),
+          };
+        }
+      );
+
+      // Return a context object with the snapshotted value
+      return { previousData };
+    },
+    onError: (err, variables, context) => {
+      // If the mutation fails, use the context returned from onMutate to roll back
+      if (context?.previousData) {
+        queryClient.setQueryData(
+          ["questions", questionId, "answers"],
+          context.previousData
+        );
+      }
+    },
+    onSettled: () => {
+      // Always refetch after error or success to ensure server state
+      queryClient.invalidateQueries({
+        queryKey: ["questions", questionId, "answers"],
+      });
+    },
+  });
+
+  return {
+    voteAnswer: mutation.mutateAsync,
+    isVoting: mutation.isPending,
+    error: mutation.error,
+  };
 }

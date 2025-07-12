@@ -9,7 +9,6 @@ import {
   Link,
   List,
   ListOrdered,
-  Image,
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
@@ -69,9 +68,7 @@ export function AnswerForm({
       case "link":
         formattedText = `[${selectedText}](url)`;
         break;
-      case "image":
-        formattedText = `![${selectedText || "Image description"}](image-url)`;
-        break;
+
       case "align-left":
       case "align-center":
       case "align-right":
@@ -95,7 +92,6 @@ export function AnswerForm({
       );
     }, 0);
   };
-
 
   return (
     <Card className="bg-card/60 backdrop-blur-sm border border-border/50">
@@ -153,17 +149,7 @@ export function AnswerForm({
             >
               <Link className="w-4 h-4" />
             </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => handleFormat("image")}
-              className="h-8 w-8 p-0"
-              aria-label="Add image"
-              role="button"
-            >
-              <Image className="w-4 h-4" />
-            </Button>
+
             <div className="w-px h-6 bg-border" />
             <Button
               type="button"

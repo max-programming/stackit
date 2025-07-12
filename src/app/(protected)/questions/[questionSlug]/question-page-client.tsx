@@ -21,6 +21,8 @@ import { TooltipProvider } from "~/components/ui/tooltip";
 import { ErrorBoundary } from "~/components/error-boundary";
 import { acceptAnswer, createAnswer, voteAnswer } from "~/lib/actions/answers";
 import { voteQuestion } from "~/lib/actions/questionVotes";
+import { useOptimisticAnswerVote } from "~/lib/queries/answers";
+import { useOptimisticQuestion } from "~/lib/hooks/useOptimisticQuestion";
 import type {
   PaginatedAnswers,
   QuestionWithDetails,
@@ -35,7 +37,7 @@ interface QuestionPageClientProps {
 }
 
 export function QuestionPageClient({
-  question,
+  question: initialQuestion,
   initialAnswers,
   userId,
   isOwner,
@@ -43,6 +45,10 @@ export function QuestionPageClient({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [sortBy, setSortBy] = useState<"votes" | "newest" | "oldest">("votes");
   const queryClient = useQueryClient();
+
+  // Optimistic voting hooks
+  const { question, handleVoteQuestion, isVoting: isVotingQuestion } = useOptimisticQuestion(initialQuestion);
+  const answerVoting = useOptimisticAnswerVote(question.id);
 
   // Infinite query for answers
   const {
@@ -77,40 +83,10 @@ export function QuestionPageClient({
     },
   });
 
-  const voteAnswerMutation = useMutation({
-    mutationFn: ({
-      answerId,
-      voteType,
-    }: {
-      answerId: string;
-      voteType: "up" | "down";
-    }) => voteAnswer(answerId, voteType),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["questions", question.id, "answers"],
-      });
-    },
-  });
-
   const acceptAnswerMutation = useMutation({
     mutationFn: acceptAnswer,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["questions"] });
-    },
-  });
-
-  const voteQuestionMutation = useMutation({
-    mutationFn: ({
-      questionId,
-      voteType,
-    }: {
-      questionId: string;
-      voteType: "up" | "down";
-    }) => voteQuestion(questionId, voteType),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["questions", question.id],
-      });
     },
   });
 
@@ -127,17 +103,20 @@ export function QuestionPageClient({
     }
   };
 
-  const handleVoteAnswer = (answerId: string, voteType: "up" | "down") => {
-    voteAnswerMutation.mutate({ answerId, voteType });
+  const handleVoteAnswer = async (answerId: string, voteType: "up" | "down") => {
+    try {
+      await answerVoting.voteAnswer({ answerId, voteType });
+    } catch (error) {
+      console.error("Error voting on answer:", error);
+      // Error handling is done by the optimistic hook
+    }
   };
 
   const handleAcceptAnswer = (answerId: string) => {
     acceptAnswerMutation.mutate(answerId);
   };
 
-  const handleVoteQuestion = (voteType: "up" | "down") => {
-    voteQuestionMutation.mutate({ questionId: question.id, voteType });
-  };
+  // handleVoteQuestion is now provided by useOptimisticQuestion hook
 
   // Flatten all answers from all pages and sort them
   const allAnswers = (
@@ -173,6 +152,7 @@ export function QuestionPageClient({
               isOwner={isOwner}
               onVote={handleVoteQuestion}
               userVote={question.userVote}
+              isVoting={isVotingQuestion}
             />
 
             {/* Answers Section */}
@@ -227,6 +207,7 @@ export function QuestionPageClient({
                       onVote={handleVoteAnswer}
                       onAccept={handleAcceptAnswer}
                       questionId={question.id}
+                      isVoting={answerVoting.isVoting}
                     />
                   ))}
                 </div>
