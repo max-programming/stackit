@@ -13,6 +13,7 @@ interface Question {
   id: string;
   title: string;
   description: string;
+  slug: string;
   tags: string[];
   user: string;
   answers: number;
@@ -43,7 +44,7 @@ export function QuestionCard({ question }: QuestionCardProps) {
         <div className="flex-1 space-y-3 flex flex-col">
           <div className="flex flex-col gap-2 flex-1">
             {/* Question Title */}
-            <Link href={`/questions/${question.id}`} className="block">
+            <Link href={`/questions/${question.slug}`} className="block">
               <h3 className="text-base sm:text-lg font-semibold text-foreground group-hover:text-primary transition-colors duration-200 line-clamp-2">
                 {question.title}
               </h3>
@@ -97,21 +98,6 @@ export function QuestionCard({ question }: QuestionCardProps) {
 
             {/* Action Buttons */}
             <div className="flex items-center gap-1">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 px-2 sm:px-3 text-muted-foreground hover:text-primary hover:bg-accent/50"
-                  >
-                    <Star className="w-4 h-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Add to favorites</p>
-                </TooltipContent>
-              </Tooltip>
-
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
