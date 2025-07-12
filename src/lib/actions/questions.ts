@@ -11,6 +11,8 @@ import {
   votes,
 } from "~/lib/db/schema";
 import { getQuestionUserVote } from "./questionVotes";
+import { headers } from "next/headers";
+import { auth } from "~/lib/auth";
 
 export interface QuestionWithDetails {
   id: string;
@@ -172,7 +174,7 @@ export async function getQuestionAnswers(
 
     // Get child count for each answer
     const answersWithChildCount = await Promise.all(
-      answersData.map(async (answer) => {
+      answersData.map(async answer => {
         const childCountResult = await db
           .select({ count: count() })
           .from(answers)
@@ -241,7 +243,7 @@ export async function getAnswerChildren(
 
     // Get user's vote for each child if authenticated
     const childrenWithVotes = await Promise.all(
-      children.map(async (child) => {
+      children.map(async child => {
         let userVote: "up" | "down" | null = null;
         if (userId) {
           const userVoteResult = await db
@@ -265,5 +267,96 @@ export async function getAnswerChildren(
   } catch (error) {
     console.error("Error fetching answer children:", error);
     return [];
+  }
+}
+
+export interface CreateQuestionData {
+  title: string;
+  description: string;
+  tags: string[];
+}
+
+export async function createQuestion(data: CreateQuestionData) {
+  try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+    if (!session?.user?.id) {
+      throw new Error("Unauthorized");
+    }
+
+    const { generateSlug } = await import("~/lib/utils/slug");
+
+    // Generate unique slug
+    let baseSlug = generateSlug(data.title);
+    let slug = baseSlug;
+    let counter = 1;
+
+    // Keep adding counter until we get a unique slug
+    while (true) {
+      const existingQuestion = await db
+        .select({ id: questions.id })
+        .from(questions)
+        .where(eq(questions.slug, slug))
+        .limit(1);
+
+      if (existingQuestion.length === 0) {
+        break;
+      }
+
+      slug = `${baseSlug}-${counter}`;
+      counter++;
+    }
+
+    // Create the question
+    const [newQuestion] = await db
+      .insert(questions)
+      .values({
+        userId: session.user.id,
+        title: data.title,
+        description: data.description,
+        slug,
+      })
+      .returning();
+
+    // Handle tags
+    if (data.tags.length > 0) {
+      for (const tagName of data.tags) {
+        const trimmedTag = tagName.trim().toLowerCase();
+        if (!trimmedTag) continue;
+
+        // Find or create tag
+        let existingTag = await db
+          .select({ id: tags.id })
+          .from(tags)
+          .where(eq(tags.name, trimmedTag))
+          .limit(1);
+
+        let tagId: string;
+        if (existingTag.length === 0) {
+          // Create new tag
+          const [newTag] = await db
+            .insert(tags)
+            .values({
+              name: trimmedTag,
+            })
+            .returning();
+          tagId = newTag.id;
+        } else {
+          tagId = existingTag[0].id;
+        }
+
+        // Create question-tag relationship
+        await db.insert(questionTags).values({
+          questionId: newQuestion.id,
+          tagId,
+        });
+      }
+    }
+
+    return { success: true, slug: newQuestion.slug };
+  } catch (error) {
+    console.error("Error creating question:", error);
+    return { success: false, error: "Failed to create question" };
   }
 }

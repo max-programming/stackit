@@ -3,6 +3,12 @@ import { auth } from "~/lib/auth";
 import { getQuestionBySlug, getQuestionAnswers } from "~/lib/actions/questions";
 import { QuestionPageClient } from "./question-page-client";
 import { headers } from "next/headers";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Question Page",
+  description: "Question Page",
+};
 
 interface PageProps {
   params: Promise<{

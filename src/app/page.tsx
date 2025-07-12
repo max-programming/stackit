@@ -8,28 +8,13 @@ import {
 } from "~/components/home";
 import { db } from "~/lib/db";
 import { questions, answers, users, questionTags, tags } from "~/lib/db/schema";
-import {
-  desc,
-  count,
-  sql,
-  eq,
-  and,
-  lt,
-  or,
-  type SQL,
-  asc,
-  like,
-  isNull,
-  gte,
-} from "drizzle-orm";
+import { desc, count, sql, eq, and, lt, or, type SQL } from "drizzle-orm";
 import { formatTimeAgo } from "~/lib/utils";
 
 interface SearchParams {
   page?: string;
   limit?: string;
-  search?: string;
   sort?: string;
-  filter?: string;
 }
 
 interface PaginationData {
@@ -90,12 +75,10 @@ async function getQuestions(searchParams: SearchParams): Promise<{
 }> {
   const limit = parseInt(searchParams.limit || "10");
   const page = parseInt(searchParams.page || "1");
-  const search = searchParams.search || "";
   const sort = searchParams.sort || "newest";
-  const filter = searchParams.filter || "all";
 
   // Get cursor for the current page
-  const cacheKey = `page_${page}_limit_${limit}_search_${search}_sort_${sort}_filter_${filter}`;
+  const cacheKey = `page_${page}_limit_${limit}_sort_${sort}`;
   let cursor = cursorCache.get(cacheKey);
 
   // Parse cursor if exists
@@ -115,28 +98,6 @@ async function getQuestions(searchParams: SearchParams): Promise<{
 
   // Build where conditions
   const whereConditions: SQL[] = [];
-
-  // Add search conditions
-  if (search) {
-    whereConditions.push(
-      or(
-        like(questions.title, `%${search}%`),
-        like(questions.description, `%${search}%`),
-        like(users.name, `%${search}%`),
-        like(tags.name, `%${search}%`)
-      )!
-    );
-  }
-
-  // Add filter conditions
-  if (filter === "unanswered") {
-    whereConditions.push(isNull(questions.acceptedAnswerId));
-  } else if (filter === "trending") {
-    // Questions created in the last 7 days with votes
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-    whereConditions.push(gte(questions.createdAt, sevenDaysAgo));
-  }
 
   // Add cursor conditions for pagination
   if (cursorDate && cursorId && page > 1) {
@@ -188,7 +149,7 @@ async function getQuestions(searchParams: SearchParams): Promise<{
       userName: users.name,
       userImage: users.image,
       answerCount: count(sql`DISTINCT ${answers.id}`),
-      totalVotes: sql<number>`COALESCE(SUM(${answers.voteCount}), 0)`,
+      totalVotes: questions.voteCount,
       tagNames: sql<string>`STRING_AGG(DISTINCT ${tags.name}, ',' ORDER BY ${tags.name})`,
     })
     .from(questions)
@@ -234,9 +195,7 @@ async function getQuestions(searchParams: SearchParams): Promise<{
     const lastItem = questionsToShow[questionsToShow.length - 1];
     const cursorData = `${lastItem.createdAt.toISOString()}|${lastItem.id}`;
     const nextCursor = Buffer.from(cursorData).toString("base64");
-    const nextPageKey = `page_${
-      page + 1
-    }_limit_${limit}_search_${search}_sort_${sort}_filter_${filter}`;
+    const nextPageKey = `page_${page + 1}_limit_${limit}_sort_${sort}`;
     cursorCache.set(nextPageKey, nextCursor);
   }
 

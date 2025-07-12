@@ -107,14 +107,13 @@ export function QuestionHeader({
 
           {/* Tags */}
           <div className="flex flex-wrap gap-2">
-            {question.tags.map((tag) => (
-              <Link
+            {question.tags.map(tag => (
+              <p
                 key={tag.id}
-                href={`/tags/${tag.name.toLowerCase()}`}
                 className="px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full hover:bg-primary/20 transition-colors duration-200"
               >
                 {tag.name}
-              </Link>
+              </p>
             ))}
           </div>
 
@@ -129,7 +128,7 @@ export function QuestionHeader({
                   <span className="text-sm font-semibold text-primary">
                     {question.user.name
                       .split(" ")
-                      .map((n) => n[0])
+                      .map(n => n[0])
                       .join("")}
                   </span>
                 </div>
@@ -140,15 +139,6 @@ export function QuestionHeader({
                 <Clock className="w-3 h-3" />
                 <span>{formatTimestamp(question.createdAt)}</span>
               </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex items-center gap-2">
-              {isOwner && (
-                <Button variant="outline" size="sm">
-                  Edit Question
-                </Button>
-              )}
             </div>
           </div>
         </div>

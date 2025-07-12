@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { Button } from "~/components/ui/button";
-import { Bell, LogIn } from "lucide-react";
+import { LogIn } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -29,14 +29,6 @@ function Header({ session }: { session: any | null }) {
       {/* Right side buttons */}
       <div className="flex items-center gap-3">
         {/* Notification button - only show if logged in */}
-        {session && (
-          <Button variant="outline" size="icon" className="relative">
-            <Bell className="h-5 w-5" />
-            <span className="absolute -top-1.5 -right-1 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
-              3
-            </span>
-          </Button>
-        )}
 
         {session ? (
           <Popover>

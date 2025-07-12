@@ -23,20 +23,20 @@ export function CodeHighlight({
 
   return !isInline ? (
     <div className="relative">
-      <div className="bg-muted/50 px-2 py-1 rounded-t-md flex items-center justify-between absolute top-0 w-full z-10">
+      {/* <div className="bg-muted/50 px-2 py-1 rounded-t-md flex items-center justify-between absolute top-0 w-full z-10">
         <div className="pl-3">{language}</div>
         <div>
           <Button variant="ghost" className="size-7">
             <Copy />
           </Button>
         </div>
-      </div>
+      </div> */}
       <ShikiHighlighter
         language={language}
-        theme="vesper"
+        theme="dark-plus"
         delay={150}
-        // showLineNumbers
-        showLanguage={false}
+        showLineNumbers
+        // showLanguage={false}
         defaultColor="dark"
         {...props}
       >

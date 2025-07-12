@@ -62,13 +62,12 @@ export function QuestionCard({ question }: QuestionCardProps) {
           {/* Tags */}
           <div className="flex flex-wrap gap-2">
             {question.tags.map(tag => (
-              <Link
+              <p
                 key={tag}
-                href={`/tags/${tag.toLowerCase()}`}
                 className="px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full hover:bg-primary/20 transition-colors duration-200"
               >
                 {tag}
-              </Link>
+              </p>
             ))}
           </div>
 
