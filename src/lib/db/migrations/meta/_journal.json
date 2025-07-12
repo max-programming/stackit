@@ -8,6 +8,13 @@
       "when": 1752293876266,
       "tag": "0000_friendly_klaw",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1752296374088,
+      "tag": "0001_crazy_zombie",
+      "breakpoints": true
     }
   ]
 }
