@@ -1,26 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { authClient } from "~/lib/auth-client";
+import { registerAction, type RegisterRequest } from '~/server/auth';
 
 export function useRegister() {
   const router = useRouter();
 
   return useMutation({
-    async mutationFn({ email, password, name }: RegisterMutation) {
-      await authClient.signUp.email({
-        email,
-        password,
-        name,
-      });
-    },
+    mutationFn: (data: RegisterRequest) => registerAction(data),
     onSuccess() {
       router.push("/");
     },
   });
-}
-
-interface RegisterMutation {
-  email: string;
-  password: string;
-  name: string;
 }

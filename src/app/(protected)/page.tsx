@@ -16,6 +16,27 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "~/components/ui/pagination";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
+import {
+  Search,
+  Plus,
+  MessageCircle,
+  ChevronUp,
+  ChevronDown,
+  Eye,
+  Clock,
+  Filter,
+  TrendingUp,
+  Users,
+  Star,
+  ArrowUp,
+  ArrowDown,
+} from "lucide-react";
 import Link from "next/link";
 
 const allQuestions = [
@@ -24,10 +45,15 @@ const allQuestions = [
     title:
       "How to join 2 columns in a data set to make a separate column in SQL",
     description:
-      "I do not know the code for it as I am a beginner. As an example what I need to do is like there is a column 1 containing First name, and column 2 consists of last name I want a column to combine",
+      "I do not know the code for it as I am a beginner. As an example what I need to do is like there is a column 1 containing First name, and column 2 consists of last name I want a column to combine I do not know the code for it as I am a beginner. As an example what I need to do is like there is a column 1 containing First name, and column 2 consists of last name I want a column to combine I do not know the code for it as I am a beginner. As an example what I need to do is like there is a column 1 containing First name, and column 2 consists of last name I want a column to combine I do not know the code for it as I am a beginner. As an example what I need to do is like there is a column 1 containing First name, and column 2 consists of last name I want a column to combine I do not know the code for it as I am a beginner. As an example what I need to do is like there is a column 1 containing First name, and column 2 consists of last name I want a column to combine I do not know the code for it as I am a beginner. As an example what I need to do is like there is a column 1 containing First name, and column 2 consists of last name I want a column to combine I do not know the code for it as I am a beginner. As an example what I need to do is like there is a column 1 containing First name, and column 2 consists of last name I want a column to combine I do not know the code for it as I am a beginner. As an example what I need to do is like there is a column 1 containing First name, and column 2 consists of last name I want a column to combine I do not know the code for it as I am a beginner. As an example what I need to do is like there is a column 1 containing First name, and column 2 consists of last name I want a column to combine I do not know the code for it as I am a beginner. As an example what I need to do is like there is a column 1 containing First name, and column 2 consists of last name I want a column to combineI do not know the code for it as I am a beginner. As an example what I need to do is like there is a column 1 containing First name, and column 2 consists of last name I want a column to combineI do not know the code for it as I am a beginner. As an example what I need to do is like there is a column 1 containing First name, and column 2 consists of last name I want a column to combineI do not know the code for it as I am a beginner. As an example what I need to do is like there is a column 1 containing First name, and column 2 consists of last name I want a column to combineI do not know the code for it as I am a beginner. As an example what I need to do is like there is a column 1 containing First name, and column 2 consists of last name I want a column to combine I do not know the code for it as I am a beginner. As an example what I need to do is like there is a column 1 containing First name, and column 2 consists of last name I want a column to combine I do not know the code for it as I am a beginner. As an example what I need to do is like there is a column 1 containing First name, and column 2 consists of last name I want a column to combine ",
     tags: ["SQL", "Data", "Beginner", "Join"],
     user: "Adnan Arodiya",
     answers: 5,
+    votes: 12,
+    views: 234,
+    timestamp: "5 hours ago",
+    isAnswered: true,
+    difficulty: "beginner",
   },
   {
     id: 2,
@@ -37,6 +63,11 @@ const allQuestions = [
     tags: ["React", "Context"],
     user: "Usman Sabuwala",
     answers: 3,
+    votes: 8,
+    views: 156,
+    timestamp: "3 hours ago",
+    isAnswered: false,
+    difficulty: "intermediate",
   },
   {
     id: 3,
@@ -46,6 +77,11 @@ const allQuestions = [
     tags: ["API", "Performance", "Optimization"],
     user: "Hussain Gagan",
     answers: 2,
+    votes: 24,
+    views: 892,
+    timestamp: "2 hours ago",
+    isAnswered: true,
+    difficulty: "advanced",
   },
   {
     id: 4,
@@ -55,6 +91,11 @@ const allQuestions = [
     tags: ["TypeScript", "Interfaces", "Best Practices"],
     user: "Sarah Johnson",
     answers: 8,
+    votes: 45,
+    views: 1234,
+    timestamp: "8 hours ago",
+    isAnswered: true,
+    difficulty: "intermediate",
   },
   {
     id: 5,
@@ -64,6 +105,11 @@ const allQuestions = [
     tags: ["Node.js", "JWT", "Authentication", "Security"],
     user: "Mike Chen",
     answers: 12,
+    votes: 67,
+    views: 2156,
+    timestamp: "12 hours ago",
+    isAnswered: true,
+    difficulty: "advanced",
   },
   {
     id: 6,
@@ -73,6 +119,11 @@ const allQuestions = [
     tags: ["CSS", "Grid", "Flexbox", "Layout"],
     user: "Emily Davis",
     answers: 6,
+    votes: 34,
+    views: 678,
+    timestamp: "6 hours ago",
+    isAnswered: true,
+    difficulty: "intermediate",
   },
   {
     id: 7,
@@ -82,6 +133,11 @@ const allQuestions = [
     tags: ["React", "Vercel", "Deployment", "Frontend"],
     user: "Alex Thompson",
     answers: 4,
+    votes: 19,
+    views: 445,
+    timestamp: "4 hours ago",
+    isAnswered: false,
+    difficulty: "beginner",
   },
   {
     id: 8,
@@ -91,6 +147,11 @@ const allQuestions = [
     tags: ["Database", "SQL", "Normalization", "Design"],
     user: "David Wilson",
     answers: 9,
+    votes: 56,
+    views: 1567,
+    timestamp: "1 day ago",
+    isAnswered: true,
+    difficulty: "advanced",
   },
   {
     id: 9,
@@ -100,6 +161,11 @@ const allQuestions = [
     tags: ["JavaScript", "Async/Await", "Error Handling"],
     user: "Lisa Brown",
     answers: 7,
+    votes: 28,
+    views: 789,
+    timestamp: "10 hours ago",
+    isAnswered: true,
+    difficulty: "intermediate",
   },
   {
     id: 10,
@@ -109,6 +175,11 @@ const allQuestions = [
     tags: ["GitHub Actions", "CI/CD", "DevOps", "Automation"],
     user: "Robert Garcia",
     answers: 5,
+    votes: 41,
+    views: 923,
+    timestamp: "7 hours ago",
+    isAnswered: false,
+    difficulty: "advanced",
   },
   {
     id: 11,
@@ -118,6 +189,11 @@ const allQuestions = [
     tags: ["CSS", "Dark Mode", "UI/UX", "JavaScript"],
     user: "Jennifer Lee",
     answers: 11,
+    votes: 73,
+    views: 1845,
+    timestamp: "2 days ago",
+    isAnswered: true,
+    difficulty: "intermediate",
   },
   {
     id: 12,
@@ -127,6 +203,11 @@ const allQuestions = [
     tags: ["React", "Hooks", "useEffect", "useState"],
     user: "Kevin Martinez",
     answers: 6,
+    votes: 22,
+    views: 567,
+    timestamp: "9 hours ago",
+    isAnswered: true,
+    difficulty: "beginner",
   },
   {
     id: 13,
@@ -136,6 +217,11 @@ const allQuestions = [
     tags: ["Performance", "Images", "Web Optimization", "SEO"],
     user: "Amanda White",
     answers: 8,
+    votes: 39,
+    views: 1123,
+    timestamp: "14 hours ago",
+    isAnswered: true,
+    difficulty: "intermediate",
   },
   {
     id: 14,
@@ -145,6 +231,11 @@ const allQuestions = [
     tags: ["Express.js", "REST API", "Node.js", "Backend"],
     user: "Chris Anderson",
     answers: 10,
+    votes: 58,
+    views: 1689,
+    timestamp: "1 day ago",
+    isAnswered: true,
+    difficulty: "advanced",
   },
   {
     id: 15,
@@ -154,133 +245,368 @@ const allQuestions = [
     tags: ["React", "Infinite Scroll", "Performance", "UX"],
     user: "Rachel Green",
     answers: 4,
+    votes: 16,
+    views: 334,
+    timestamp: "5 hours ago",
+    isAnswered: false,
+    difficulty: "intermediate",
   },
 ];
 
+function getDifficultyColor(difficulty: string) {
+  switch (difficulty) {
+    case "beginner":
+      return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400";
+    case "intermediate":
+      return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400";
+    case "advanced":
+      return "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400";
+    default:
+      return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400";
+  }
+}
+
+function formatNumber(num: number) {
+  if (num >= 1000) {
+    return (num / 1000).toFixed(1) + "k";
+  }
+  return num.toString();
+}
+
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col items-center px-2 py-6">
-      {/* Filters and Search */}
-      <div className="w-full max-w-3xl flex flex-col sm:flex-row gap-2 sm:gap-4 mb-6">
-        <div className="flex flex-1 gap-2 sm:gap-4">
-          <Button
-            asChild
-            variant="default"
-            className="flex-1 sm:flex-none h-full"
-          >
-            <Link href={"/"}>Ask New question</Link>
-          </Button>
-          <div className="hidden sm:inline-block">
-            <Select defaultValue="newest">
-              <SelectTrigger
-                className="w-32 h-10"
-                aria-label="Filter questions"
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent side="bottom">
-                <SelectItem value="newest">Newest</SelectItem>
-                <SelectItem value="unanswered">Unanswered</SelectItem>
-                <SelectItem value="more">More</SelectItem>
-              </SelectContent>
-            </Select>
+    <TooltipProvider>
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          {/* Header Section */}
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold text-foreground mb-2">
+              Top Questions
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              Discover the most engaging discussions in our community
+            </p>
           </div>
-        </div>
-        <form className="flex flex-1 gap-2">
-          <Input placeholder="Search" className="flex-1" />
-          <Button type="submit" variant="outline" className="px-3 h-full">
-            🔍
-          </Button>
-        </form>
-        {/* Mobile filter dropdown */}
-        <div className="flex sm:hidden gap-2">
-          <Button variant="outline">Filters</Button>
-        </div>
-      </div>
 
-      {/* Questions List */}
-      <div className="w-full max-w-3xl flex flex-col gap-4">
-        {allQuestions.map(q => (
-          <div
-            key={q.id}
-            className="rounded-lg border bg-card p-4 flex flex-col gap-2 sm:flex-row sm:items-center"
-          >
-            <div className="flex-1 space-x-3">
-              <div className="font-semibold text-base truncate mb-2">
-                {q.title}
+          {/* Enhanced Filters and Search */}
+          <div className="bg-card/50 backdrop-blur-sm border rounded-xl p-6 mb-8 shadow-lg">
+            <div className="flex flex-col lg:flex-row gap-4">
+              {/* Left side - Action buttons */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button
+                  asChild
+                  className="group relative overflow-hidden bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
+                >
+                  <Link href="/" className="flex items-center gap-2">
+                    <Plus className="w-4 h-4" />
+                    Ask Question
+                  </Link>
+                </Button>
+
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    className="flex items-center gap-2 hover:bg-accent"
+                  >
+                    <TrendingUp className="w-4 h-4" />
+                    Trending
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="flex items-center gap-2 hover:bg-accent"
+                  >
+                    <Users className="w-4 h-4" />
+                    Unanswered
+                  </Button>
+                </div>
               </div>
-              <div className="flex gap-2 items-start">
-                <div>
-                  <div className="flex gap-2 flex-wrap">
-                    {q.tags.slice(0, 2).map(tag => (
-                      <Link
-                        key={tag}
-                        href={"/"}
-                        className="px-2 py-0.5 rounded bg-muted text-xs text-muted-foreground hover:underline hover:text-primary"
-                        style={{ width: "fit-content" }}
-                      >
-                        {tag}
-                      </Link>
-                    ))}
+
+              {/* Right side - Search and filters */}
+              <div className="flex flex-1 gap-3">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search questions, tags, or users..."
+                    className="pl-10 bg-background/50 backdrop-blur-sm border-muted/50 focus:border-primary/50 transition-colors"
+                  />
+                </div>
+
+                <Select defaultValue="newest">
+                  <SelectTrigger className="w-40 bg-background/50 backdrop-blur-sm border-muted/50">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="newest">
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-4 h-4" />
+                        Newest
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="votes">
+                      <div className="flex items-center gap-2">
+                        <ArrowUp className="w-4 h-4" />
+                        Most Votes
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="answers">
+                      <div className="flex items-center gap-2">
+                        <MessageCircle className="w-4 h-4" />
+                        Most Answers
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="views">
+                      <div className="flex items-center gap-2">
+                        <Eye className="w-4 h-4" />
+                        Most Views
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Button
+                  variant="outline"
+                  className="flex items-center gap-2 hover:bg-accent"
+                >
+                  <Filter className="w-4 h-4" />
+                  <span className="hidden sm:inline">Filter</span>
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Enhanced Questions List */}
+          <div className="space-y-4">
+            {allQuestions.map(question => (
+              <div
+                key={question.id}
+                className="group bg-card/60 backdrop-blur-sm border border-border/50 rounded-xl p-6 hover:bg-card/80 hover:border-border hover:shadow-lg transition-all duration-300 cursor-pointer"
+              >
+                <div className="flex flex-col lg:flex-row gap-4">
+                  {/* Stats Column */}
+                  <div className="flex lg:flex-col gap-4 lg:gap-3 lg:items-center lg:min-w-[100px]">
+                    {/* Votes */}
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="flex lg:flex-col items-center gap-1 bg-muted/50 rounded-lg p-3 min-w-[80px]">
+                          <div className="flex items-center gap-1 lg:flex-col">
+                            <ArrowUp className="w-4 h-4 text-muted-foreground" />
+                            <span className="font-semibold text-foreground">
+                              {question.votes}
+                            </span>
+                          </div>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Community votes for this question</p>
+                      </TooltipContent>
+                    </Tooltip>
+
+                    {/* Answers */}
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div
+                          className={`flex lg:flex-col items-center gap-1 rounded-lg p-3 min-w-[80px] ${
+                            question.isAnswered
+                              ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400"
+                              : "bg-muted/50 text-muted-foreground"
+                          }`}
+                        >
+                          <div className="flex items-center gap-1 lg:flex-col">
+                            <MessageCircle className="w-4 h-4" />
+                            <span className="font-semibold">
+                              {question.answers}
+                            </span>
+                          </div>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>
+                          {question.isAnswered
+                            ? "This question has been answered"
+                            : "No answers yet"}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+
+                    {/* Views */}
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="flex lg:flex-col items-center gap-1 bg-muted/50 rounded-lg p-3 min-w-[80px]">
+                          <div className="flex items-center gap-1 lg:flex-col">
+                            <Eye className="w-4 h-4 text-muted-foreground" />
+                            <span className="font-semibold text-foreground">
+                              {formatNumber(question.views)}
+                            </span>
+                          </div>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Number of times this question has been viewed</p>
+                      </TooltipContent>
+                    </Tooltip>
                   </div>
-                  {q.tags.length > 2 && (
-                    <div className="mt-1">
-                      <span
-                        className="px-2 py-0.5 rounded bg-muted text-xs text-muted-foreground cursor-default"
-                        style={{ width: "fit-content" }}
+
+                  {/* Content Column */}
+                  <div className="flex-1 space-y-3 flex flex-col">
+                    <div className="flex flex-col gap-2 flex-1">
+                      {/* Question Title */}
+                      <Link
+                        href={`/questions/${question.id}`}
+                        className="block"
                       >
-                        +{q.tags.length - 2}
+                        <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors duration-200 line-clamp-2">
+                          {question.title}
+                        </h3>
+                      </Link>
+
+                      {/* Question Description */}
+                      <p className="text-muted-foreground text-sm leading-relaxed line-clamp-4">
+                        {question.description}
+                      </p>
+                    </div>
+
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-2">
+                      {question.tags.map(tag => (
+                        <Link
+                          key={tag}
+                          href={`/tags/${tag.toLowerCase()}`}
+                          className="px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full hover:bg-primary/20 transition-colors duration-200"
+                        >
+                          {tag}
+                        </Link>
+                      ))}
+
+                      {/* Difficulty Badge */}
+                      <span
+                        className={`px-3 py-1 text-xs font-medium rounded-full ${getDifficultyColor(
+                          question.difficulty
+                        )}`}
+                      >
+                        {question.difficulty}
                       </span>
                     </div>
-                  )}
-                </div>
-                <div className="text-sm text-muted-foreground mb-1 flex-1 line-clamp-3">
-                  {q.description}
+
+                    {/* Meta Information */}
+                    <div className="flex items-center justify-between pt-2 border-t border-border/50">
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <Link
+                          href={`/users/${question.user
+                            .replace(/\s+/g, "-")
+                            .toLowerCase()}`}
+                          className="flex items-center gap-2 hover:text-primary transition-colors"
+                        >
+                          <div className="w-6 h-6 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center">
+                            <span className="text-xs font-semibold text-primary">
+                              {question.user
+                                .split(" ")
+                                .map(n => n[0])
+                                .join("")}
+                            </span>
+                          </div>
+                          <span className="font-medium">{question.user}</span>
+                        </Link>
+
+                        <div className="flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          <span>{question.timestamp}</span>
+                        </div>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex items-center gap-2">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 px-3 text-muted-foreground hover:text-primary"
+                            >
+                              <Star className="w-4 h-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Add to favorites</p>
+                          </TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 px-3 text-muted-foreground hover:text-primary"
+                            >
+                              <ArrowUp className="w-4 h-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Upvote this question</p>
+                          </TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 px-3 text-muted-foreground hover:text-primary"
+                            >
+                              <ArrowDown className="w-4 h-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Downvote this question</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <Link
-                href={"/"}
-                className="text-xs text-muted-foreground hover:underline hover:text-primary"
-              >
-                {q.user}
-              </Link>
-            </div>
-            <div className="flex flex-row sm:flex-col items-center gap-2 sm:ml-4">
-              <Button
-                variant="secondary"
-                className="px-3 py-1 text-xs cursor-default"
-                disabled
-              >
-                {q.answers} ans
-              </Button>
+            ))}
+          </div>
+
+          {/* Enhanced Pagination */}
+          <div className="flex justify-center mt-12">
+            <div className="bg-card/50 backdrop-blur-sm border rounded-xl p-4 shadow-lg">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious href="#" className="hover:bg-accent" />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#" className="hover:bg-accent">
+                      1
+                    </PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#" className="hover:bg-accent">
+                      2
+                    </PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#" className="hover:bg-accent">
+                      3
+                    </PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#" className="hover:bg-accent">
+                      10
+                    </PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationNext href="#" className="hover:bg-accent" />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
             </div>
           </div>
-        ))}
+        </div>
       </div>
-
-      {/* Pagination */}
-      <div className="w-full max-w-3xl flex justify-center mt-8">
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious href="#" />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#">1</PaginationLink>
-            </PaginationItem>
-
-            <PaginationItem>
-              <PaginationLink href="#">2</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext href="#" />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </div>
-    </div>
+    </TooltipProvider>
   );
 }

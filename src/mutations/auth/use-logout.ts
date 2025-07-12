@@ -1,14 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { authClient } from "~/lib/auth-client";
+import { logoutAction } from '~/server/auth';
 
 export function useLogout() {
   const router = useRouter();
 
   return useMutation({
-    async mutationFn() {
-      await authClient.signOut();
-    },
+    mutationFn: () => logoutAction(),
     onSuccess() {
       router.push("/login");
     },
