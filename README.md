@@ -1,15 +1,9 @@
-# stackit
+# Stackit
 
-To install dependencies:
+Stackit is a stackoverflow clone
 
-```bash
-bun install
-```
+## Team Members
 
-To run:
-
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.2.4. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+1. Usman Sabuwala - ui.sabuwala@gmail.com
+2. Adnan Arodiya - aiarodiya07@gmail.com
+3. Hussain Gagan - hussain.gagan@gmail.com
